@@ -26,21 +26,21 @@ export default function ProductsPage() {
       {/* Header section - Engaging Pattern Background */}
       <div className="px-6 sm:px-12 pb-12 border-b border-slate-50 flex flex-col md:flex-row md:items-end justify-between gap-10 bg-pattern-subtle rounded-t-[3rem] pt-12">
         <div className="space-y-4">
-          <nav className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-8 font-display flex items-center gap-3">
+          <nav className="text-[10px] font-semibold uppercase tracking-[0.4em] text-slate-400 mb-8 font-display flex items-center gap-3">
             <Link href="/" className="hover:text-emerald-700 transition-colors">
               Home
             </Link>
             <span className="opacity-20 text-[8px]">/</span>
-            <span className="text-slate-900 border-b border-emerald-500/30 pb-0.5 font-bold">
+            <span className="text-slate-900 border-b border-emerald-500/30 pb-0.5 font-semibold">
               Shop
             </span>
           </nav>
-          <h1 className="text-5xl sm:text-6xl font-display font-black tracking-tighter text-slate-950 leading-[0.9]">
+          <h1 className="text-5xl sm:text-6xl font-display font-bold tracking-tighter text-slate-950 leading-[0.9]">
             The Collection.
           </h1>
           <p className="text-slate-500 font-medium text-lg max-w-sm leading-relaxed">
             Browse our curated selection of{" "}
-            <span className="text-slate-950 font-black">
+            <span className="text-slate-950 font-bold">
               {filtered.length} natural products
             </span>{" "}
             sourced with integrity.
@@ -49,13 +49,13 @@ export default function ProductsPage() {
 
         {/* Category filter - Modern Rounded layout */}
         <div className="flex flex-col items-start gap-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 ml-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 ml-4">
             Categories
           </p>
           <div className="flex gap-2 flex-wrap p-1.5 bg-slate-50 rounded-full border border-slate-100">
             <button
               onClick={() => setActiveCategory("all")}
-              className={`px-6 py-2.5 rounded-full text-[11px] font-bold tracking-tight transition-all duration-300 ${
+              className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
                 activeCategory === "all"
                   ? "bg-slate-900 text-white shadow-sm"
                   : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"
@@ -67,7 +67,7 @@ export default function ProductsPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-6 py-2.5 rounded-full text-[11px] font-bold tracking-tight transition-all duration-300 ${
+                className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
                   activeCategory === cat.id
                     ? "bg-slate-900 text-white shadow-sm"
                     : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"
@@ -81,7 +81,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Products grid - Consistent gap, rounded style */}
-      <div className="py-12 sm:py-20">
+      <div className="px-6 sm:px-12 py-12 sm:py-20">
         {filtered.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {filtered.map((p) => (
@@ -110,7 +110,7 @@ export default function ProductsPage() {
             </p>
             <button
               onClick={() => setActiveCategory("all")}
-              className="text-[11px] font-black tracking-widest uppercase text-slate-950 border-b border-emerald-500 pb-1 hover:text-emerald-700 transition-colors"
+              className="text-[11px] font-semibold tracking-widest uppercase text-slate-950 border-b border-emerald-500 pb-1 hover:text-emerald-700 transition-colors"
             >
               View all items
             </button>

@@ -13,6 +13,7 @@ export default function ProductCard({ product }: Props) {
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
+    e.stopPropagation();
     addItem({
       productId: product.id,
       productName: product.name,
@@ -28,10 +29,10 @@ export default function ProductCard({ product }: Props) {
 
   return (
     <div className="group relative bg-[#faf9f7] rounded-3xl overflow-hidden flex flex-col h-full transition-all duration-500 hover:-translate-y-1">
-      {/* Visual Area - Refined rounding & smaller scale */}
+      {/* Image Area */}
       <Link
         href={`/products/${product.slug}`}
-        className="block relative aspect-4/5 overflow-hidden"
+        className="block relative aspect-square overflow-hidden"
       >
         {product.images[0] ? (
           <Image
@@ -42,61 +43,78 @@ export default function ProductCard({ product }: Props) {
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest italic">
+          <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+            <span className="text-slate-300 text-[10px] font-medium uppercase tracking-widest italic">
               Mervida
             </span>
           </div>
         )}
 
-        {/* Add to Cart Overlay - Smaller rounded pill */}
-        {!isOutOfStock && (
-          <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 pointer-events-none group-hover:pointer-events-auto">
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-slate-950 text-white py-3 rounded-full font-bold text-[9px] uppercase tracking-[0.2em] transition-all hover:bg-emerald-600 active:scale-95"
-            >
-              Quick Add
-            </button>
-          </div>
-        )}
-
-        {/* Badges - Smaller, refined scale */}
+        {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {product.isNew && (
-            <span className="bg-emerald-600 text-white text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ring-2 ring-white">
+            <span className="bg-emerald-600 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
               New
             </span>
           )}
           {product.isBestseller && (
-            <span className="bg-amber-400 text-white text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ring-2 ring-white">
+            <span className="bg-amber-500 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
               Bestseller
             </span>
           )}
         </div>
       </Link>
 
-      {/* Info - Clean hierarchy, refined typography scale */}
-      <div className="p-5 pt-4 flex flex-col flex-1 items-start">
-        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+      {/* Content Area */}
+      <div className="p-4 sm:p-5 flex flex-col flex-1">
+        {/* Unit label */}
+        <p className="text-[9px] font-medium text-slate-400 uppercase tracking-widest mb-1.5">
           {product.unit}
         </p>
+
+        {/* Product name */}
         <Link
           href={`/products/${product.slug}`}
-          className="block mb-2 group/link"
+          className="block mb-3 group/link"
         >
-          <h3 className="text-[17px] font-display font-bold text-slate-900 leading-tight line-clamp-2 min-h-[2.2rem] transition-colors group-hover/link:text-emerald-700 tracking-tight">
+          <h3 className="text-[15px] sm:text-base font-semibold text-slate-900 leading-snug line-clamp-2 min-h-[2.4em] transition-colors group-hover/link:text-emerald-700">
             {product.name}
           </h3>
         </Link>
-        <div className="mt-auto w-full flex items-baseline justify-between">
-          <span className="text-lg font-display font-black text-slate-900 tabular-nums tracking-tighter">
+
+        {/* Divider */}
+        <div className="border-t border-slate-200/60 my-auto" />
+
+        {/* Price + Action row */}
+        <div className="flex items-center justify-between mt-3 gap-2">
+          <span className="text-lg font-bold text-slate-900 tabular-nums tracking-tight">
             &#8358;{product.price.toLocaleString()}
           </span>
-          {isOutOfStock && (
-            <span className="text-[8px] text-red-500 font-bold uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full">
-              Out of Stock
+
+          {isOutOfStock ? (
+            <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-full">
+              Sold out
             </span>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              aria-label={`Add ${product.name} to cart`}
+              className="bg-slate-900 text-white p-2.5 rounded-full transition-all hover:bg-emerald-600 active:scale-90 shrink-0"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </button>
           )}
         </div>
       </div>

@@ -65,7 +65,7 @@ export default function BulkOrdersPage() {
       {/* Hero - Engaging Mesh & Pattern */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-24 px-6 text-center rounded-b-6xl overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
             Strategic Partnerships
           </p>
           <h1 className="text-5xl sm:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
@@ -87,14 +87,14 @@ export default function BulkOrdersPage() {
       <section className="max-w-6xl mx-auto px-6 py-24 sm:py-32">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div className="space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600">
               The Mervida Advantage
             </p>
             <h2 className="text-4xl font-display font-bold tracking-tighter text-slate-950 uppercase leading-none">
               Why Partner With Us
             </h2>
           </div>
-          <p className="text-slate-400 font-bold text-[11px] uppercase tracking-widest max-w-[240px] md:text-right">
+          <p className="text-slate-400 font-medium text-[11px] uppercase tracking-widest max-w-[240px] md:text-right">
             Optimized supply chains for high-volume stakeholders.
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function BulkOrdersPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                   Business name
                 </label>
                 <input
@@ -161,7 +161,7 @@ export default function BulkOrdersPage() {
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+                <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                   Contact name
                 </label>
                 <input
@@ -176,7 +176,7 @@ export default function BulkOrdersPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                 Phone number
               </label>
               <input
@@ -190,7 +190,7 @@ export default function BulkOrdersPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                 Product(s) interested in
               </label>
               <input
@@ -204,7 +204,7 @@ export default function BulkOrdersPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                 Estimated quantity
               </label>
               <input
@@ -218,7 +218,7 @@ export default function BulkOrdersPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
+              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
                 Additional message (optional)
               </label>
               <textarea
@@ -233,7 +233,7 @@ export default function BulkOrdersPage() {
             <button
               type="submit"
               disabled={!whatsappNumber}
-              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-black/5 ${
+              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-semibold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-black/5 ${
                 !whatsappNumber ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -242,6 +242,51 @@ export default function BulkOrdersPage() {
                 : "WhatsApp not configured"}
             </button>
           </form>
+        </div>
+      </section>
+
+      {/* Distribution Platform Banner */}
+      <section className="pb-20 px-6">
+        <div className="max-w-2xl mx-auto">
+          <a
+            href="https://distribute.mervida.com/register"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block bg-slate-950 rounded-3xl p-8 sm:p-10 text-center group hover:bg-emerald-900 transition-all duration-500 relative overflow-hidden"
+          >
+            <div className="relative z-10">
+              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-400 mb-3">
+                Mervida Distribution
+              </p>
+              <h3 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight mb-3">
+                Looking for our full product range?
+              </h3>
+              <p className="text-white/50 text-sm font-medium mb-6 max-w-md mx-auto">
+                Whether you&apos;re a consumer, retailer, or business — explore
+                our distribution platform for product catalogues, pricing, and
+                delivery across Nigeria.
+              </p>
+              <span className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest border border-white/10 group-hover:bg-white group-hover:text-emerald-900 transition-all">
+                Visit Mervida Distribute
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                  />
+                </svg>
+              </span>
+            </div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-display font-bold text-white/[0.03] pointer-events-none select-none tracking-tighter italic">
+              B2B
+            </div>
+          </a>
         </div>
       </section>
     </main>

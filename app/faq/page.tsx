@@ -93,7 +93,7 @@ export default function FAQPage() {
     <main className="bg-[#faf9f7] min-h-screen">
       {/* Hero */}
       <section className="bg-slate-950 pt-24 pb-20 px-6 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-500 mb-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-500 mb-5">
           Support Portal
         </p>
         <h1 className="text-5xl sm:text-6xl font-display font-bold text-white tracking-tighter leading-none">

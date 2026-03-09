@@ -11,14 +11,13 @@ export default function Footer() {
         {/* Brand & Info */}
         <div className="space-y-10">
           <Link href="/" className="flex items-center group w-fit">
-            <div className="relative w-32 h-10 transition-all duration-500 group-hover:scale-105">
-              <Image
-                src="/images/mervida-logo.png"
-                alt="Mervida Logo"
-                fill
-                className="object-contain brightness-0 invert transition-all duration-500"
-              />
-            </div>
+            <Image
+              src="/images/mervida-logo.png"
+              alt="Mervida Logo"
+              width={128}
+              height={40}
+              className="h-10 w-auto object-contain brightness-0 invert transition-all duration-500 group-hover:scale-105"
+            />
           </Link>
           <p className="text-slate-500 text-[14px] leading-relaxed max-w-xs font-medium border-l border-white/5 pl-6">
             Natural, clean-label Nigerian ingredients. Crafted with integrity,
@@ -41,7 +40,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div className="space-y-10">
-          <h3 className="text-[10px] font-black tracking-[0.4em] uppercase text-emerald-500/50">
+          <h3 className="text-[10px] font-bold tracking-[0.4em] uppercase text-emerald-500/50">
             Catalog
           </h3>
           <ul className="space-y-5">
@@ -54,7 +53,7 @@ export default function Footer() {
               <li key={item}>
                 <Link
                   href="/products"
-                  className="text-slate-500 hover:text-white text-[13px] font-bold transition-all"
+                  className="text-slate-500 hover:text-white text-[13px] font-semibold transition-all"
                 >
                   {item}
                 </Link>
@@ -65,7 +64,7 @@ export default function Footer() {
 
         {/* Company Links */}
         <div className="space-y-10">
-          <h3 className="text-[10px] font-black tracking-[0.4em] uppercase text-emerald-500/50">
+          <h3 className="text-[10px] font-bold tracking-[0.4em] uppercase text-emerald-500/50">
             Navigation
           </h3>
           <ul className="space-y-5">
@@ -73,6 +72,8 @@ export default function Footer() {
               "About Mervida",
               "Contact Desk",
               "Bulk Inquiries",
+              "Diaspora Shopping",
+              "Elder Care Shopping",
               "Help & FAQ",
               "Portal Access",
             ].map((item, idx) => (
@@ -83,11 +84,13 @@ export default function Footer() {
                       "/about",
                       "/contact",
                       "/bulk-orders",
+                      "/personal-shopping/diaspora",
+                      "/personal-shopping/elder-care",
                       "/faq",
                       "/admin/login",
                     ][idx]
                   }
-                  className="text-slate-500 hover:text-white text-[13px] font-bold transition-all"
+                  className="text-slate-500 hover:text-white text-[13px] font-semibold transition-all"
                 >
                   {item}
                 </Link>
@@ -98,7 +101,7 @@ export default function Footer() {
 
         {/* Newsletter/Contact placeholder */}
         <div className="space-y-10">
-          <h3 className="text-[10px] font-black tracking-[0.4em] uppercase text-emerald-500/50">
+          <h3 className="text-[10px] font-bold tracking-[0.4em] uppercase text-emerald-500/50">
             Presence
           </h3>
           <div className="space-y-6">
@@ -125,25 +128,46 @@ export default function Footer() {
       </div>
 
       <div className="max-w-[1440px] mx-auto pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
-        <p className="text-slate-700 text-[10px] font-bold tracking-[0.3em] uppercase">
+        <p className="text-slate-700 text-[10px] font-medium tracking-[0.3em] uppercase">
           &copy; {currentYear} GFO Foods Limited. All rights reserved.
         </p>
-        <div className="flex flex-wrap gap-8 sm:gap-10 justify-center">
+        <div className="flex flex-wrap gap-8 sm:gap-10 justify-center items-center">
+          <a
+            href="https://distribute.mervida.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-500/50 hover:text-emerald-400 text-[9px] font-semibold uppercase tracking-widest transition-all flex items-center gap-1"
+          >
+            Explore our distribution platform
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+              />
+            </svg>
+          </a>
           <Link
             href="/faq"
-            className="text-slate-500 hover:text-white text-[9px] font-bold uppercase tracking-widest transition-all"
+            className="text-slate-500 hover:text-white text-[9px] font-semibold uppercase tracking-widest transition-all"
           >
             Help & FAQ
           </Link>
           <Link
             href="/privacy"
-            className="text-slate-500 hover:text-white text-[9px] font-bold uppercase tracking-widest transition-all"
+            className="text-slate-500 hover:text-white text-[9px] font-semibold uppercase tracking-widest transition-all"
           >
             Security & Privacy
           </Link>
           <Link
             href="/terms"
-            className="text-slate-500 hover:text-white text-[9px] font-bold uppercase tracking-widest transition-all"
+            className="text-slate-500 hover:text-white text-[9px] font-semibold uppercase tracking-widest transition-all"
           >
             Usage Clauses
           </Link>

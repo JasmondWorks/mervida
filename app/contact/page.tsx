@@ -28,7 +28,7 @@ export default function ContactPage() {
     <main className="bg-[#faf9f7] min-h-screen">
       {/* Hero header */}
       <section className="bg-slate-950 pt-24 pb-20 px-6 text-center">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-500 mb-5">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-500 mb-5">
           Get in Touch
         </p>
         <h1 className="text-5xl sm:text-6xl font-display font-bold text-white tracking-tighter">
@@ -40,7 +40,7 @@ export default function ContactPage() {
       <div className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Left: Contact info — no card wrapper */}
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600 mb-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-10">
             Contact Information
           </p>
 
@@ -67,7 +67,7 @@ export default function ContactPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-1">
                 Office Location
               </p>
               <p className="text-slate-900 font-medium text-lg">
@@ -88,7 +88,7 @@ export default function ContactPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-1">
                 WhatsApp Direct
               </p>
               {whatsappNumber ? (
@@ -127,7 +127,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-1">
                   Email Inquiry
                 </p>
                 <a
@@ -165,7 +165,7 @@ export default function ContactPage() {
             <div>
               <label
                 htmlFor="name"
-                className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
+                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
               >
                 Your nomenclature
               </label>
@@ -182,7 +182,7 @@ export default function ContactPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
+                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
               >
                 Contact email
               </label>
@@ -198,7 +198,7 @@ export default function ContactPage() {
             <div>
               <label
                 htmlFor="message"
-                className="block text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
+                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
               >
                 Message scope
               </label>

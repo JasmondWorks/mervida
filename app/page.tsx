@@ -115,7 +115,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/products"
-            className="hidden sm:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-700 transition-all border-b border-transparent hover:border-emerald-700 pb-1"
+            className="hidden sm:inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400 hover:text-emerald-700 transition-all border-b border-transparent hover:border-emerald-700 pb-1"
           >
             View all collection &rarr;
           </Link>
@@ -150,7 +150,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 bg-slate-50 rounded-4xl overflow-hidden shadow-xs">
           {/* Left Content */}
           <div className="p-10 sm:p-16 lg:p-20 flex flex-col justify-center bg-white border-r border-slate-50">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600 mb-6">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-6">
               Our Commitment
             </p>
             <h2 className="text-3xl sm:text-5xl font-display font-bold leading-tight tracking-tighter mb-8 text-slate-950">
@@ -206,7 +206,7 @@ export default function HomePage() {
       <section className="py-20 px-6 sm:px-12 bg-white">
         <div className="max-w-[1440px] mx-auto">
           <div className="max-w-2xl mb-16 space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-slate-400">
               Service Offering
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tighter text-slate-900 leading-tight">
@@ -238,7 +238,7 @@ export default function HomePage() {
       <section className="py-24 px-6 sm:px-12 bg-slate-50/50">
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           <div className="space-y-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600">
               Support Portal
             </p>
             <h2 className="text-3xl sm:text-5xl font-display font-bold tracking-tighter text-slate-950 leading-[1.1]">
@@ -246,7 +246,7 @@ export default function HomePage() {
             </h2>
             <Link
               href="/faq"
-              className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-emerald-700 hover:text-slate-950 transition-all border-b border-emerald-500/20 pb-1"
+              className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-emerald-700 hover:text-slate-950 transition-all border-b border-emerald-500/20 pb-1"
             >
               Explore full support desk &rarr;
             </Link>
@@ -287,7 +287,7 @@ export default function HomePage() {
       <section className="py-20 px-6 sm:px-12 bg-white">
         <div className="max-w-[1440px] mx-auto bg-slate-950 rounded-4xl p-12 sm:p-20 relative overflow-hidden text-center shadow-2xl shadow-slate-200">
           <div className="relative z-10 max-w-2xl mx-auto space-y-10">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400">
               CORPORATE SERVICES
             </p>
             <h2 className="text-4xl sm:text-6xl font-display font-bold text-white tracking-tighter leading-none">

@@ -7,8 +7,14 @@ import { useCart } from "./CartContext";
 import { getCategories } from "@/app/lib/store";
 import type { Category } from "@/app/lib/types";
 
+const PERSONAL_SHOPPING_LINKS = [
+  { label: "Shop for the Diaspora", href: "/personal-shopping/diaspora" },
+  { label: "Elder Care Shopping", href: "/personal-shopping/elder-care" },
+];
+
 const NAV_LINKS = [
   { label: "Shop", href: "/products" },
+  { label: "Personal Shopping", href: "/personal-shopping" },
   { label: "Bulk Orders", href: "/bulk-orders" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -21,7 +27,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [showCats, setShowCats] = useState(false);
+  const [showPS, setShowPS] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const psTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setCategories(getCategories());
@@ -46,12 +54,26 @@ export default function Navbar() {
     timeoutRef.current = setTimeout(() => setShowCats(false), 300);
   };
 
+  const handlePSMouseEnter = () => {
+    if (psTimeoutRef.current) clearTimeout(psTimeoutRef.current);
+    setShowPS(true);
+  };
+
+  const handlePSMouseLeave = () => {
+    psTimeoutRef.current = setTimeout(() => setShowPS(false), 300);
+  };
+
   // Identify pages that have a dark hero section where the navbar needs to be white initially
   const isDarkPath =
     pathname === "/" ||
-    ["/bulk-orders", "/contact", "/faq", "/privacy", "/terms"].some((p) =>
-      pathname.startsWith(p),
-    );
+    [
+      "/bulk-orders",
+      "/contact",
+      "/faq",
+      "/privacy",
+      "/terms",
+      "/personal-shopping",
+    ].some((p) => pathname.startsWith(p));
   const isDarkTheme = isDarkPath && !scrolled;
 
   return (
@@ -62,16 +84,15 @@ export default function Navbar() {
     >
       <div className="max-w-[1440px] mx-auto px-6 sm:px-12 flex items-center justify-between transition-colors duration-500">
         {/* Logo - Dynamic Brand Asset */}
-        <Link href="/" className="flex items-center group">
-          <div className="relative w-32 h-10 transition-all duration-500 group-hover:scale-105">
-            <Image
-              src="/images/mervida-logo.png"
-              alt="Mervida Logo"
-              fill
-              className={`object-contain transition-all duration-500 ${isDarkTheme ? "brightness-0 invert" : ""}`}
-              priority
-            />
-          </div>
+        <Link href="/" className="flex items-center group shrink-0">
+          <Image
+            src="/images/mervida-logo.png"
+            alt="Mervida Logo"
+            width={128}
+            height={40}
+            className={`h-10 w-auto object-contain transition-all duration-500 group-hover:scale-105 ${isDarkTheme ? "brightness-0 invert" : ""}`}
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation - Dynamic Style */}
@@ -87,15 +108,23 @@ export default function Navbar() {
               key={link.href}
               className="relative"
               onMouseEnter={
-                link.label === "Shop" ? handleMouseEnter : undefined
+                link.label === "Shop"
+                  ? handleMouseEnter
+                  : link.label === "Personal Shopping"
+                    ? handlePSMouseEnter
+                    : undefined
               }
               onMouseLeave={
-                link.label === "Shop" ? handleMouseLeave : undefined
+                link.label === "Shop"
+                  ? handleMouseLeave
+                  : link.label === "Personal Shopping"
+                    ? handlePSMouseLeave
+                    : undefined
               }
             >
               <Link
                 href={link.href}
-                className={`px-6 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all duration-500 flex items-center gap-2 ${
+                className={`px-6 py-2 rounded-full text-[11px] font-semibold uppercase tracking-widest transition-all duration-500 flex items-center gap-2 ${
                   isActive(link.href)
                     ? isDarkTheme
                       ? "bg-white text-slate-950"
@@ -106,9 +135,10 @@ export default function Navbar() {
                 }`}
               >
                 {link.label}
-                {link.label === "Shop" && (
+                {(link.label === "Shop" ||
+                  link.label === "Personal Shopping") && (
                   <svg
-                    className={`w-3 h-3 transition-transform duration-300 ${showCats ? "rotate-180" : ""}`}
+                    className={`w-3 h-3 transition-transform duration-300 ${(link.label === "Shop" && showCats) || (link.label === "Personal Shopping" && showPS) ? "rotate-180" : ""}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -133,7 +163,7 @@ export default function Navbar() {
                   }`}
                 >
                   <div className="p-3 mb-2 border-b border-slate-50">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">
+                    <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest px-2">
                       Collections
                     </p>
                   </div>
@@ -148,9 +178,41 @@ export default function Navbar() {
                   ))}
                   <Link
                     href="/products"
-                    className="block px-4 py-3 rounded-2xl text-[12px] font-bold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
+                    className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
                   >
                     View All Products
+                  </Link>
+                </div>
+              )}
+
+              {/* Personal Shopping Dropdown */}
+              {link.label === "Personal Shopping" && (
+                <div
+                  className={`absolute top-full left-0 mt-2 w-56 bg-white rounded-3xl shadow-2xl border border-slate-100 p-2 transition-all duration-300 transform origin-top-left ${
+                    showPS
+                      ? "opacity-100 scale-100 translate-y-0"
+                      : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+                  }`}
+                >
+                  <div className="p-3 mb-2 border-b border-slate-50">
+                    <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest px-2">
+                      Services
+                    </p>
+                  </div>
+                  {PERSONAL_SHOPPING_LINKS.map((ps) => (
+                    <Link
+                      key={ps.href}
+                      href={ps.href}
+                      className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+                    >
+                      {ps.label}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/personal-shopping"
+                    className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
+                  >
+                    View All Services
                   </Link>
                 </div>
               )}
@@ -261,6 +323,20 @@ export default function Navbar() {
                         className="text-[12px] font-medium text-slate-500 hover:text-emerald-600 transition-colors"
                       >
                         {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {link.label === "Personal Shopping" && (
+                  <div className="grid grid-cols-1 gap-3 pl-2">
+                    {PERSONAL_SHOPPING_LINKS.map((ps) => (
+                      <Link
+                        key={ps.href}
+                        href={ps.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="text-[12px] font-medium text-slate-500 hover:text-emerald-600 transition-colors"
+                      >
+                        {ps.label}
                       </Link>
                     ))}
                   </div>

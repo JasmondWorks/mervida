@@ -1,12 +1,16 @@
-'use client';
-import { usePathname } from 'next/navigation';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import CartDrawer from './CartDrawer';
+"use client";
+import { usePathname } from "next/navigation";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import CartDrawer from "./CartDrawer";
 
-export default function SiteChrome({ children }: { children: React.ReactNode }) {
+export default function SiteChrome({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith('/admin');
+  const isAdmin = pathname.startsWith("/admin");
 
   if (isAdmin) {
     return <>{children}</>;

@@ -28,7 +28,7 @@ export default function AboutPage() {
       {/* Hero section - Engaging Pattern Background */}
       <section className="px-6 sm:px-12 pb-24 border-b border-slate-50 flex flex-col lg:flex-row lg:items-end justify-between gap-12 bg-pattern-subtle rounded-t-6xl pt-12">
         <div className="space-y-6">
-          <nav className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-400 mb-8 font-display flex items-center gap-3">
+          <nav className="text-[10px] font-semibold uppercase tracking-[0.4em] text-slate-400 mb-8 font-display flex items-center gap-3">
             <Link href="/" className="hover:text-emerald-700 transition-colors">
               Home
             </Link>
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
         {/* Identity section - tight but readable */}
         <div className="max-w-md space-y-6 pt-12 border-t border-slate-50 lg:border-none lg:pt-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600 mb-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-2">
             Our Identity
           </p>
           <p className="text-slate-500 font-medium leading-loose text-lg">
@@ -106,7 +106,7 @@ export default function AboutPage() {
 
       {/* Founder Spotlight */}
       <section className="py-32 max-w-5xl mx-auto text-center border-t border-slate-50">
-        <div className="inline-flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-full border border-slate-100 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 mb-12">
+        <div className="inline-flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-full border border-slate-100 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-12">
           <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
           Founding Vision
         </div>
@@ -124,7 +124,7 @@ export default function AboutPage() {
       <section className="py-32 border-t border-slate-50">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8 px-4">
           <div className="space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600">
               The Mervida Ethos
             </p>
             <h2 className="text-4xl font-display font-bold tracking-tighter text-slate-950 uppercase leading-none">
