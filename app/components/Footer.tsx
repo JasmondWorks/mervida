@@ -1,8 +1,13 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Footer() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -129,7 +134,8 @@ export default function Footer() {
 
       <div className="max-w-[1440px] mx-auto pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
         <p className="text-slate-700 text-[10px] font-medium tracking-[0.3em] uppercase">
-          &copy; {currentYear} GFO Foods Limited. All rights reserved.
+          &copy; {mounted ? currentYear : ""} GFO Foods Limited. All rights
+          reserved.
         </p>
         <div className="flex flex-wrap gap-8 sm:gap-10 justify-center items-center">
           <a
