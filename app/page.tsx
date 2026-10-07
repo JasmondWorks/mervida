@@ -7,6 +7,8 @@ import type { Product } from "@/app/lib/types";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import ProductCard from "@/app/components/ProductCard";
 
+import ManufacturingShowcase from "@/app/components/ManufacturingShowcase";
+
 const SERVICES = [
   {
     title: "Premium Exports",
@@ -89,10 +91,12 @@ const SERVICES = [
 
 export default function HomePage() {
   const [featured, setFeatured] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     initStore();
     const all = getProducts();
+    setAllProducts(all);
     const f = all.filter((p) => p.isFeatured || p.isBestseller).slice(0, 4);
     setFeatured(f);
   }, []);
@@ -145,24 +149,26 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Food Manufacturing Video Showcase */}
+      {allProducts.length > 0 && (
+        <ManufacturingShowcase products={allProducts} />
+      )}
+
       {/* Brand / About section - Tighter hierarchy & smaller elements */}
       <section className="px-6 sm:px-12 py-10 max-w-[1440px] mx-auto mb-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 bg-slate-50 rounded-4xl overflow-hidden shadow-xs">
           {/* Left Content */}
           <div className="p-10 sm:p-16 lg:p-20 flex flex-col justify-center bg-white border-r border-slate-50">
             <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-6">
-              Our Commitment
+              Our Core Purpose
             </p>
             <h2 className="text-3xl sm:text-5xl font-display font-bold leading-tight tracking-tighter mb-8 text-slate-950">
-              Premium. Natural.
+              Zero Artificial Foods.
               <br />
-              Nigerian.
+              100% Real Sourcing.
             </h2>
             <p className="text-slate-500 text-base sm:text-lg leading-relaxed max-w-md mb-10 font-medium">
-              GFO FOODS LIMITED is dedicated to the finest natural ingredients
-              from Nigeria. Our Mervida brand stands for clean-label,
-              no-compromise food products — made with integrity, sourced with
-              care.
+              GFO FOODS LIMITED processes pure, natural African ingredients so families and businesses never have to depend on artificially modified foods, chemical fillers, or synthetic additives.
             </p>
             <Link
               href="/about"
@@ -192,7 +198,7 @@ export default function HomePage() {
           {/* Right: image - no scaling, focus on quality */}
           <div className="relative h-[400px] lg:h-auto overflow-hidden">
             <Image
-              src="/images/Gemini_Generated_Image_n4osk1n4osk1n4os.png"
+              src="/images/palm-oil.jpeg"
               fill
               className="object-cover grayscale-30 hover:grayscale-0 transition-all duration-700 brightness-95 hover:brightness-100"
               alt="GFO Foods products"

@@ -11,6 +11,15 @@ export interface Variant {
   stock?: number;
 }
 
+export interface ProcessVideo {
+  title: string;
+  videoUrl: string;
+  posterUrl?: string;
+  duration?: string;
+  highlights: string[];
+  categoryName?: string;
+}
+
 export interface Product {
   id: string; // unique ID
   name: string; // display name
@@ -30,6 +39,7 @@ export interface Product {
   isFeatured: boolean;
   isBestseller: boolean;
   isNew: boolean;
+  processVideo?: ProcessVideo | null;
   createdAt: string;
   updatedAt: string;
   seoTitle: string;

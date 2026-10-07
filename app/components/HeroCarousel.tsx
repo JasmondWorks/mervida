@@ -6,19 +6,19 @@ import { getSettings, initStore } from "@/app/lib/store";
 
 const SLIDES = [
   {
-    label: "Brand of GFO Foods",
-    title: "Natural Nourishment\nby Mervida",
-    sub: "Clean-label food products, responsibly sourced from Nigeria's local harvests.",
+    label: "African Foods",
+    title: "Authentic African\nStaples & Seasonings",
+    sub: "Hygienically processed Ijebu Garri, unrefined Red Palm Oil, and natural spice blends.",
   },
   {
-    label: "Quality Promise",
-    title: "Honest Ingredients.\nPure Flavour.",
-    sub: "No artificial preservatives, no compromise. Only the best for your kitchen.",
+    label: "Baking Ingredients",
+    title: "Raw Cold-Pressed\nVirgin Coconut Oil",
+    sub: "Unrefined lipid purity for artisanal baking, pastry crafting, and healthy nutrition.",
   },
   {
-    label: "Directly Sourced",
-    title: "From Farm\nto Your Table",
-    sub: "Supporting local ecosystems while delivering premium goods to your family.",
+    label: "Food Chemicals",
+    title: "Food-Grade Carrot\nExtract Oil",
+    sub: "Concentrated Beta-Carotene lipid extract for natural food coloring and formulation chemistry.",
   },
 ];
 
