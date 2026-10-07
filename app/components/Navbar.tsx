@@ -101,16 +101,22 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-[1440px] mx-auto px-6 sm:px-12 flex items-center justify-between transition-colors duration-500">
-          {/* Logo - Dynamic Brand Asset */}
-          <Link href="/" className="flex items-center group shrink-0">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
             <Image
               src="/images/mervida-logo.png"
               alt="Mervida Logo"
               width={128}
               height={40}
-              className={`h-10 w-auto object-contain transition-all duration-500 group-hover:scale-105 ${isDarkTheme ? "brightness-0 invert" : ""}`}
+              className={`h-9 w-auto object-contain transition-all duration-500 group-hover:scale-105 ${isDarkTheme ? "brightness-0 invert" : ""}`}
               priority
             />
+            <span
+              className={`font-display font-bold text-xl sm:text-2xl tracking-tighter transition-colors duration-500 ${
+                isDarkTheme ? "text-white" : "text-slate-950"
+              }`}
+            >
+              MERVIDA
+            </span>
           </Link>
 
           {/* Desktop Navigation - Dynamic Style */}
@@ -338,7 +344,7 @@ export default function Navbar() {
           >
             {/* Header in sidebar */}
             <div className="flex items-center justify-between mb-10">
-              <Link href="/" onClick={() => setMenuOpen(false)}>
+              <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5">
                 <Image
                   src="/images/mervida-logo.png"
                   alt="Mervida Logo"
@@ -346,6 +352,9 @@ export default function Navbar() {
                   height={32}
                   className="h-8 w-auto object-contain"
                 />
+                <span className="font-display font-bold text-xl tracking-tighter text-slate-950">
+                  MERVIDA
+                </span>
               </Link>
               <button
                 onClick={() => setMenuOpen(false)}

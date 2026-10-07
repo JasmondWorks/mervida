@@ -32,55 +32,30 @@ const URGENCY_OPTIONS = ["No Rush", "Within 2 weeks", "Urgent (within 1 week)"];
 
 const PRODUCT_CATEGORIES = [
   {
-    title: "Proteins & Seafood",
+    title: "African Foods",
     items: [
-      "Smoked Catfish (Eja Aro)",
-      "Smoked Mackerel",
-      "Stockfish (Okporoko)",
-      "Dried/Smoked Shrimp (Crayfish)",
-      "Ponmo (Cow Skin)",
-      "Dried Snail",
+      "Ijebu Yellow Garri (Mervida Brand)",
+      "Unrefined Red Palm Oil (Mervida Brand)",
+      "African Multipurpose Spice Blend",
+      "Smoked Catfish & Mackerel",
+      "Stockfish & Crayfish",
+      "Egusi & Ogiri",
     ],
   },
   {
-    title: "Soups & Stew Bases",
+    title: "Baking Ingredients",
     items: [
-      "Palm Oil (Red Oil)",
-      "Egusi (Melon Seeds) — whole and ground",
-      "Ogiri / Locust Beans (Iru)",
-      "Ofe Akwu / Banga Soup Concentrate",
-      "Tomato Paste (Mervida brand)",
+      "Cold-Pressed Virgin Coconut Oil (Mervida Brand)",
+      "Natural Plant Lipids & Baking Fats",
+      "Dehydrated Flavor Extracts",
     ],
   },
   {
-    title: "Grains, Flours & Starches",
+    title: "Food Chemicals & Additives",
     items: [
-      "Garri (White & Yellow)",
-      "Semovita / Semolina",
-      "Plantain Flour",
-      "Ofada Rice",
-      "Yam Flour (Poundo Yam)",
-      "Ede Cocoyam",
-    ],
-  },
-  {
-    title: "Spices & Flavour",
-    items: [
-      "Uziza Leaves (dried)",
-      "Utazi Leaves (dried)",
-      "Ehuru (Calabash Nutmeg)",
-      "Uda (Negro Pepper)",
-      "Ochu / Alligator Pepper",
-    ],
-  },
-  {
-    title: "Snacks & Comfort",
-    items: [
-      "Chin Chin",
-      "Puff Puff Mix",
-      "Nigerian Biscuits",
-      "Nkwobi Spice Pack",
-      "Suya Spice",
+      "Food-Grade Carrot Extract Oil (Beta-Carotene)",
+      "Natural Colorants & Preservative Extracts",
+      "Formulation Ingredients",
     ],
   },
 ];

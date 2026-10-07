@@ -13,6 +13,9 @@ import type { Product, Category } from "@/app/lib/types";
 import { useCart } from "@/app/components/CartContext";
 import ProductCard from "@/app/components/ProductCard";
 
+import VideoModal from "@/app/components/VideoModal";
+import type { ProcessVideo } from "@/app/lib/types";
+
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [product, setProduct] = useState<Product | null>(null);
@@ -22,6 +25,7 @@ export default function ProductDetailPage() {
   const [mainImage, setMainImage] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [activeVideo, setActiveVideo] = useState<ProcessVideo | null>(null);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -335,6 +339,66 @@ export default function ProductDetailPage() {
           )}
       </div>
 
+      {/* Manufacturing Process Video Spotlight */}
+      {product.processVideo && (
+        <div className="py-16 my-12 bg-slate-950 rounded-5xl p-8 sm:p-14 text-white border border-slate-900 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+            <div className="space-y-4 max-w-xl">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em] border border-emerald-500/20">
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 6.75C4 5.231 5.231 4 6.75 4h10.5C18.769 4 20 5.231 20 6.75v10.5c0 1.519-1.231 2.75-2.75 2.75H6.75C5.231 20 4 18.769 4 17.25V6.75zm6 3.75v3rem4-1.5-4-1.5z" />
+                </svg>
+                Verified Video Proof
+              </div>
+              <h3 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-white leading-tight">
+                {product.processVideo.title}
+              </h3>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Watch step-by-step how {product.name} is processed using strict clean-label, hygienic standards at GFO Foods Limited.
+              </p>
+              {product.processVideo.highlights && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {product.processVideo.highlights.map((h, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 rounded-full bg-white/5 text-[11px] font-medium text-emerald-300 border border-white/5"
+                    >
+                      ✓ {h}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setActiveVideo(product.processVideo!)}
+              className="relative w-full lg:w-96 aspect-video rounded-3xl bg-slate-800 border border-white/10 overflow-hidden group cursor-pointer shrink-0 hover:border-emerald-500/50 transition-all shadow-xl"
+            >
+              {product.processVideo.posterUrl && (
+                <Image
+                  src={product.processVideo.posterUrl}
+                  alt={product.processVideo.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-75 group-hover:brightness-95"
+                />
+              )}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-emerald-600/90 text-white flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-emerald-500 transition-all border border-white/20">
+                  <svg className="w-7 h-7 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
+              {product.processVideo.duration && (
+                <span className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/80 text-[10px] font-mono text-slate-300 border border-white/10">
+                  {product.processVideo.duration}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Related Products - Consistent Scale */}
       {related.length > 0 && (
         <div className="py-24">
@@ -361,6 +425,13 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Video Modal Player */}
+      <VideoModal
+        video={activeVideo}
+        isOpen={!!activeVideo}
+        onClose={() => setActiveVideo(null)}
+      />
     </main>
   );
 }

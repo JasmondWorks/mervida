@@ -1,14 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { initStore, getProducts, getCategories } from "@/app/lib/store";
 import type { Product, Category } from "@/app/lib/types";
 import ProductCard from "@/app/components/ProductCard";
 
-export default function ProductsPage() {
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   useEffect(() => {
     initStore();
@@ -16,10 +20,36 @@ export default function ProductsPage() {
     setCategories(getCategories());
   }, []);
 
-  const filtered =
-    activeCategory === "all"
-      ? products
-      : products.filter((p) => p.categoryId === activeCategory);
+  const categoryQuery = searchParams.get("category") || "all";
+
+  // Match category by ID or slug
+  const activeCategoryObj = categories.find(
+    (c) => c.id === categoryQuery || c.slug === categoryQuery
+  );
+
+  const activeCategoryId = activeCategoryObj
+    ? activeCategoryObj.id
+    : categoryQuery === "all"
+    ? "all"
+    : categoryQuery;
+
+  const handleSelectCategory = (catId: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (catId === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", catId);
+    }
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+  };
+
+  const filtered = products.filter((p) => {
+    if (activeCategoryId === "all") return true;
+    return p.categoryId === activeCategoryId;
+  });
 
   return (
     <main className="bg-white min-h-screen pt-32 pb-24 max-w-[1440px] mx-auto animate-in fade-in duration-1000">
@@ -54,9 +84,9 @@ export default function ProductsPage() {
           </p>
           <div className="flex gap-2 flex-wrap p-1.5 bg-slate-50 rounded-full border border-slate-100">
             <button
-              onClick={() => setActiveCategory("all")}
+              onClick={() => handleSelectCategory("all")}
               className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
-                activeCategory === "all"
+                activeCategoryId === "all"
                   ? "bg-slate-900 text-white shadow-sm"
                   : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"
               }`}
@@ -66,9 +96,9 @@ export default function ProductsPage() {
             {categories.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+                onClick={() => handleSelectCategory(cat.id)}
                 className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
-                  activeCategory === cat.id
+                  activeCategoryId === cat.id
                     ? "bg-slate-900 text-white shadow-sm"
                     : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"
                 }`}
@@ -109,7 +139,7 @@ export default function ProductsPage() {
               No products found in this category.
             </p>
             <button
-              onClick={() => setActiveCategory("all")}
+              onClick={() => handleSelectCategory("all")}
               className="text-[11px] font-semibold tracking-widest uppercase text-slate-950 border-b border-emerald-500 pb-1 hover:text-emerald-700 transition-colors"
             >
               View all items
@@ -118,5 +148,13 @@ export default function ProductsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen pt-32 text-center text-slate-400 text-sm">Loading collection...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }

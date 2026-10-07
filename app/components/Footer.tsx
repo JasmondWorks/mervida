@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-24 mb-24 relative z-10 animate-in fade-in duration-1000">
         {/* Brand & Info */}
         <div className="space-y-10">
-          <Link href="/" className="flex items-center group w-fit">
+          <Link href="/" className="flex items-center gap-3 group w-fit">
             <Image
               src="/images/mervida-logo.png"
               alt="Mervida Logo"
@@ -23,6 +23,9 @@ export default function Footer() {
               height={40}
               className="h-10 w-auto object-contain brightness-0 invert transition-all duration-500 group-hover:scale-105"
             />
+            <span className="font-display font-bold text-2xl tracking-tighter text-white">
+              MERVIDA
+            </span>
           </Link>
           <p className="text-slate-500 text-[14px] leading-relaxed max-w-xs font-medium border-l border-white/5 pl-6">
             Natural, clean-label Nigerian ingredients. Crafted with integrity,
@@ -50,10 +53,11 @@ export default function Footer() {
           </h3>
           <ul className="space-y-5">
             {[
-              "Plantain Flour",
-              "Date Powder",
-              "Date Syrup",
-              "Natural Sea Salt",
+              "Ijebu Yellow Garri",
+              "Unrefined Red Palm Oil",
+              "African Spice Blend",
+              "Virgin Coconut Oil",
+              "Carrot Extract Oil",
             ].map((item) => (
               <li key={item}>
                 <Link

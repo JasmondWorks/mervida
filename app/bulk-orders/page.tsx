@@ -199,7 +199,7 @@ export default function BulkOrdersPage() {
                 value={products}
                 onChange={(e) => setProducts(e.target.value)}
                 className={inputCls}
-                placeholder="e.g. Plantain Flour"
+                placeholder="e.g. Red Palm Oil, Virgin Coconut Oil, Carrot Extract Oil"
               />
             </div>
 
