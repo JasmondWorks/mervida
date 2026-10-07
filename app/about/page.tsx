@@ -4,21 +4,21 @@ import Link from "next/link";
 const PROMISES = [
   {
     num: "01",
-    title: "Clean Label",
+    title: "Freedom from Artificial Foods",
     description:
-      "No artificial preservatives, no MSG, no artificial flavours. What you see on the label is exactly what is in the package.",
+      "Eliminating synthetic MSG, chemical preservatives, hydrogenated shortenings, and artificial dyes so African families never have to rely on ultra-processed foods.",
   },
   {
     num: "02",
-    title: "Premium Quality",
+    title: "Authentic African Sourcing",
     description:
-      "Every product is carefully sourced and processed to the highest standard. We never compromise on quality.",
+      "Directly sourcing 100% natural agricultural produce from Nigerian farms, protecting local ecosystems and ensuring complete origin transparency.",
   },
   {
     num: "03",
-    title: "Nigerian Heritage",
+    title: "Clean-Label Processing",
     description:
-      "We celebrate Nigeria's rich food culture by making traditional ingredients accessible, convenient, and trustworthy.",
+      "Using cold expeller pressing, traditional hygienic fermentation, and stone milling to preserve real nutrients without chemical bleaching or solvents.",
   },
 ];
 
@@ -38,26 +38,22 @@ export default function AboutPage() {
             </span>
           </nav>
           <h1 className="text-5xl sm:text-7xl font-display font-bold tracking-tighter text-slate-950 leading-[0.85] max-w-xl">
-            Our Mission.
+            Pure Food
             <br />
-            Natural Quality.
+            Sovereignty.
           </h1>
           <p className="text-slate-500 font-medium text-lg sm:text-xl max-w-sm leading-relaxed">
-            A commitment to the finest natural ingredients from Nigeria, crafted
-            for every kitchen.
+            Reclaiming African health by sourcing and processing 100% natural, chemical-free food products.
           </p>
         </div>
 
         {/* Identity section - tight but readable */}
         <div className="max-w-md space-y-6 pt-12 border-t border-slate-50 lg:border-none lg:pt-0">
           <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-2">
-            Our Identity
+            Our Core Mission
           </p>
           <p className="text-slate-500 font-medium leading-loose text-lg">
-            GFO FOODS LIMITED is a premium food and wellness company dedicated
-            to bringing you the finest natural ingredients from Nigeria and
-            across Africa. We believe that what you eat should nourish your
-            body—which is why everything we make is clean-label and honest.
+            GFO FOODS LIMITED exists to end the dependency on ultra-processed, artificially modified foods in Africa and the diaspora. We source, cold-press, and hygienically process 100% clean-label African staples, baking ingredients, and plant-based food chemicals.
           </p>
         </div>
       </section>
