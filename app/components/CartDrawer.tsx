@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 import { fetchSettings } from "@/app/lib/api-client";
@@ -22,7 +23,7 @@ export default function CartDrawer() {
       setWhatsappNumber(s.whatsappNumber ?? "");
       setMessageTemplate(
         s.whatsappMessageTemplate ||
-          "Hello GFO Foods! I would like to order:\n\n{items}\n\nEstimated Total: \u20a6{total}\n\nKindly confirm my order and provide payment details. Thank you!",
+          "Hello Mervida! I would like to order:\n\n{items}\n\nEstimated Subtotal: ₦{total}\nDelivery Location (City / State): [Please enter your area]\n\nKindly confirm availability and total with delivery. Thank you!",
       );
     });
   }, []);
@@ -58,12 +59,12 @@ export default function CartDrawer() {
         }`}
       >
         {/* Header - Modern rounding & tight hierarchy */}
-        <div className="px-8 py-8 border-b border-slate-50 flex items-center justify-between">
+        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-display font-bold text-slate-900 tracking-tight uppercase">
+            <p className="text-base font-extrabold text-slate-950 tracking-tight">
               Your Cart
-            </h2>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1.5">
+            </p>
+            <p className="text-caption text-slate-400 mt-0.5">
               Review items
             </p>
           </div>
@@ -91,10 +92,10 @@ export default function CartDrawer() {
         {/* Content - tight proximity cards */}
         <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-6 text-center animate-in fade-in duration-500">
+            <div className="flex flex-col items-center justify-center h-full gap-5 text-center px-4 animate-in fade-in duration-500">
               <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
                 <svg
-                  className="w-8 h-8 text-slate-200"
+                  className="w-8 h-8 text-slate-300"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -107,9 +108,21 @@ export default function CartDrawer() {
                   />
                 </svg>
               </div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                The cart feels light
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-slate-900">
+                  Your cart is empty
+                </p>
+                <p className="text-xs text-slate-400 font-normal max-w-xs">
+                  Discover our unrefined oils, garri, and natural seasonings.
+                </p>
+              </div>
+              <Link
+                href="/products"
+                onClick={closeCart}
+                className="mt-2 inline-flex items-center justify-center px-6 h-10 bg-slate-900 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg transition-all active:scale-95 shadow-sm"
+              >
+                Explore Collection
+              </Link>
             </div>
           ) : (
             <ul className="space-y-4">
@@ -224,9 +237,8 @@ export default function CartDrawer() {
             </div>
 
             <div className="space-y-4">
-              <p className="text-[10px] text-slate-400 text-center leading-relaxed font-medium">
-                Orders are finalized via WhatsApp. We will confirm availability
-                and delivery details.
+              <p className="text-[11px] text-slate-400 text-center leading-relaxed font-normal">
+                You will finalize your order directly with our team on WhatsApp. We will confirm your delivery address, calculate courier fees, and provide payment details (Bank Transfer & POS).
               </p>
 
               {whatsappNumber ? (
@@ -234,9 +246,9 @@ export default function CartDrawer() {
                   href={buildWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all text-center flex items-center justify-center gap-3 active:scale-[0.98] shadow-lg shadow-slate-200"
+                  className="w-full bg-slate-900 hover:bg-emerald-600 text-white h-12 rounded-lg font-semibold text-xs transition-all text-center flex items-center justify-center gap-3 active:scale-[0.98] shadow-lg shadow-slate-200"
                 >
-                  Checkout on WhatsApp
+                  Complete Order on WhatsApp
                 </a>
               ) : (
                 <div className="p-4 bg-white border border-slate-100 rounded-lg text-center">

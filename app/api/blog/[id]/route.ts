@@ -1,19 +1,19 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdminRequest } from "@/app/lib/require-admin";
 import { scheduleCloudinaryCleanup } from "@/app/lib/media-cleanup";
 import { sanitizeBlogHtml } from "@/app/lib/sanitize-html";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const post = await prisma.blogPost.findUnique({ where: { id } });
-  if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(post);
+  if (!post) return apiError("Post not found.", 404);
+  return apiSuccess(post);
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
   const body = await request.json();
@@ -22,11 +22,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     where: { slug: body.slug, NOT: { id } },
   });
   if (duplicate) {
-    return NextResponse.json({ error: "Slug already in use." }, { status: 409 });
+    return apiError("Slug already in use.", 409);
   }
 
   const before = await prisma.blogPost.findUnique({ where: { id } });
-  if (!before) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!before) return apiError("Post not found.", 404);
 
   const wasPublished = before.status === "published";
   const isPublished = body.status === "published";
@@ -48,18 +48,18 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await scheduleCloudinaryCleanup([before.coverImage]);
   }
 
-  return NextResponse.json(post);
+  return apiSuccess(post, { message: "Blog post updated successfully." });
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
 
   const post = await prisma.blogPost.delete({ where: { id } }).catch(() => null);
-  if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!post) return apiError("Post not found.", 404);
 
   await scheduleCloudinaryCleanup([post.coverImage]);
-  return NextResponse.json({ ok: true });
+  return apiSuccess({ id }, { message: "Blog post deleted successfully." });
 }

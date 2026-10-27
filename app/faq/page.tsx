@@ -6,7 +6,7 @@ const FAQS = [
   {
     question: "How do I place an order?",
     answer:
-      'Browse our products, add items to your cart, then click "Order via WhatsApp". We will confirm your order and arrange delivery.',
+      'Browse our products, add items to your cart, then click "Complete Order on WhatsApp". We will confirm your delivery address, calculate courier fees, and provide payment details.',
   },
   {
     question: "Do you deliver nationwide?",
@@ -96,7 +96,7 @@ export default function FAQPage() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-500 mb-5">
           Support Portal
         </p>
-        <h1 className="text-5xl sm:text-6xl font-display font-bold text-white tracking-tighter leading-none">
+        <h1 className="text-3xl sm:text-5xl font-display font-bold text-white tracking-tighter leading-tight">
           Frequently Answered <br className="hidden sm:block" /> Questions
         </h1>
       </section>
@@ -114,18 +114,18 @@ export default function FAQPage() {
 
       {/* Still have questions */}
       <div className="max-w-3xl mx-auto px-6 pb-24 text-center">
-        <div className="bg-white rounded-5xl p-12 shadow-2xl shadow-slate-950/5 border border-slate-100/50 relative overflow-hidden">
+        <div className="bg-white rounded-5xl p-10 sm:p-12 shadow-2xl shadow-slate-950/5 border border-slate-100/50 relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-2xl font-display font-bold text-slate-950 mb-3 tracking-tight uppercase">
+            <h2 className="text-xl font-display font-bold text-slate-950 mb-2 tracking-tight">
               Still have questions?
             </h2>
-            <p className="text-slate-500 font-medium text-sm mb-10 max-w-sm mx-auto">
+            <p className="text-slate-500 font-normal text-sm mb-8 max-w-sm mx-auto">
               Our administrative team is available for direct consultation via
               WhatsApp.
             </p>
             <Link
               href="/contact"
-              className="inline-flex h-14 items-center bg-slate-950 hover:bg-emerald-600 text-white px-12 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/20"
+              className="inline-flex h-12 items-center bg-slate-950 hover:bg-emerald-600 text-white px-10 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/20"
             >
               Contact Us
             </Link>

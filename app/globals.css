@@ -22,6 +22,10 @@
   --color-emerald-600: #059669;
   --color-emerald-700: #047857;
 
+  /* Faint neutral border — use as `border-border` in place of a shadow when
+     a card needs visual separation without the weight of a drop shadow. */
+  --color-border: #ece9e4;
+
   /*
    * Radius scale — see .agents/style-guide.md for when to use each.
    * Tailwind's default scale stops at --radius-4xl (2rem); 5xl/6xl below
@@ -58,36 +62,38 @@ body {
  * font-black. See .agents/style-guide.md for the full rationale and the
  * Tailwind class each level maps to.
  */
-h1 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
-}
+@layer base {
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
 
-h2 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-}
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+  }
 
-h3 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  font-size: 1.5rem;
-}
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    font-size: 1.125rem;
+  }
 
-h4 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-  font-size: 1.125rem;
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    font-size: 1rem;
+  }
 }
 
 /* Interaction: Use background shades & scale, not shadows */
@@ -107,7 +113,40 @@ a {
 
 /* Caption — small uppercase labels, meta text, eyebrow-style tags */
 .text-caption {
-  @apply text-[11px] font-semibold uppercase tracking-[0.2em];
+  @apply text-xs font-semibold capitalize;
+}
+
+/*
+ * Natural shadow scale — three sizes, each stacking multiple layers so the
+ * shadow reads as light falling on an object rather than a single flat
+ * blur. The layer closest to the element is small, tight, and the most
+ * opaque; each layer further out is larger, softer, and fades more — the
+ * same falloff a real cast shadow has. Use instead of Tailwind's default
+ * `shadow-*` scale, which is a single hard-edged layer and looks synthetic
+ * when a card needs real depth. All three share the same slate-900 base
+ * color and layer count progression, so they combine consistently —
+ * e.g. `shadow-soft-sm` on a rest state and `shadow-soft-md` on hover
+ * never feels like a different shadow system kicking in.
+ */
+@utility shadow-soft-sm {
+  box-shadow:
+    0 1px 1px rgb(15 23 42 / 0.03),
+    0 2px 3px rgb(15 23 42 / 0.03),
+    0 4px 6px rgb(15 23 42 / 0.02);
+}
+@utility shadow-soft-md {
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.04),
+    0 4px 8px rgb(15 23 42 / 0.04),
+    0 12px 24px rgb(15 23 42 / 0.04),
+    0 24px 48px rgb(15 23 42 / 0.03);
+}
+@utility shadow-soft-lg {
+  box-shadow:
+    0 2px 4px rgb(15 23 42 / 0.05),
+    0 8px 16px rgb(15 23 42 / 0.05),
+    0 24px 48px rgb(15 23 42 / 0.05),
+    0 48px 96px rgb(15 23 42 / 0.04);
 }
 
 /* Custom UI Tokens */
@@ -176,21 +215,28 @@ a {
 }
 .blog-prose h1,
 .blog-prose h2,
-.blog-prose h3 {
+.blog-prose h3,
+.blog-prose h4 {
   font-family: var(--font-display);
-  font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--color-slate-950);
-  margin-top: 2.2em;
-  margin-bottom: 0.7em;
 }
 .blog-prose h1 {
-  font-size: 2rem;
+  font-size: 2.25rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 2.2em;
+  margin-bottom: 0.8em;
 }
 .blog-prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.625rem;
+  line-height: 1.25;
+  font-weight: 800;
   position: relative;
   padding-bottom: 0.5em;
+  margin-top: 2.2em;
+  margin-bottom: 0.7em;
 }
 .blog-prose h2::after {
   content: "";
@@ -202,14 +248,31 @@ a {
   border-radius: 2px;
   background: var(--color-emerald-500);
 }
-.blog-prose h3 {
-  font-size: 1.2rem;
-  color: var(--color-emerald-700);
+.blog-prose h2[style*="text-align: center"]::after,
+.blog-prose h2[style*="text-align:center"]::after {
+  left: 50%;
+  transform: translateX(-50%);
 }
-.blog-prose > p:first-of-type {
-  font-size: 1.15em;
-  color: var(--color-slate-900);
+.blog-prose h2[style*="text-align: right"]::after,
+.blog-prose h2[style*="text-align:right"]::after {
+  left: auto;
+  right: 0;
+}
+.blog-prose h3 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 800;
+  color: var(--color-emerald-700);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+.blog-prose h4 {
+  font-size: 1.1rem;
+  line-height: 1.35;
   font-weight: 600;
+  color: var(--color-slate-900);
+  margin-top: 1.8em;
+  margin-bottom: 0.5em;
 }
 .blog-prose a {
   color: var(--color-emerald-700);
@@ -217,33 +280,66 @@ a {
   text-decoration-color: color-mix(in srgb, var(--color-emerald-500) 40%, transparent);
   text-underline-offset: 2px;
 }
-.blog-prose strong {
+.blog-prose strong,
+.blog-prose b {
   color: var(--color-slate-950);
   font-weight: 600;
 }
+.blog-prose em,
+.blog-prose i {
+  font-style: italic;
+}
+.blog-prose u {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+.blog-prose s,
+.blog-prose strike,
+.blog-prose del {
+  text-decoration: line-through;
+  color: var(--color-slate-400);
+}
 .blog-prose blockquote {
   margin: 2em 0;
-  padding: 0.25em 0 0.25em 1.5em;
+  padding: 0.5em 0 0.5em 1.5rem;
   border-left: 3px solid var(--color-emerald-500);
   font-style: italic;
   color: var(--color-slate-600);
 }
-.blog-prose ul,
-.blog-prose ol {
-  margin: 1.5em 0;
-  padding-left: 1.4em;
-}
-.blog-prose li {
+.blog-prose blockquote p {
   margin: 0.5em 0;
 }
-.blog-prose ul li {
+.blog-prose ul {
   list-style-type: disc;
+  list-style-position: outside;
+  padding-left: 1.6rem;
+  margin: 1.5em 0;
 }
-.blog-prose ol li {
+.blog-prose ol {
   list-style-type: decimal;
+  list-style-position: outside;
+  padding-left: 1.6rem;
+  margin: 1.5em 0;
+}
+.blog-prose li {
+  display: list-item;
+  margin: 0.5em 0;
+  padding-left: 0.25rem;
+}
+.blog-prose ul ul,
+.blog-prose ol ul {
+  list-style-type: circle;
+  margin: 0.4em 0;
+}
+.blog-prose ul ol,
+.blog-prose ol ol {
+  list-style-type: lower-alpha;
+  margin: 0.4em 0;
 }
 .blog-prose li::marker {
   color: var(--color-emerald-500);
+  font-weight: 600;
 }
 .blog-prose img {
   width: 100%;
@@ -254,8 +350,25 @@ a {
   background: var(--color-slate-100);
   color: var(--color-slate-800);
   padding: 0.15em 0.4em;
-  border-radius: 0.3em;
-  font-size: 0.9em;
+  border-radius: 0.35em;
+  font-size: 0.88em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.blog-prose pre {
+  background: var(--color-slate-900);
+  color: var(--color-slate-100);
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  overflow-x: auto;
+  margin: 2em 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.blog-prose pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
 }
 .blog-prose hr {
   border: none;

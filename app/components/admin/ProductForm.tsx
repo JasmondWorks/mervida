@@ -6,6 +6,7 @@ import type { Product, Category, Variant, ProcessVideo } from "@/app/lib/types";
 import { generateId, generateSlug } from "@/app/lib/store";
 import { fetchCategories, createProduct, updateProduct } from "@/app/lib/api-client";
 import { uploadFile, UPLOAD_FOLDERS } from "@/app/lib/upload-client";
+import { Button, Field, Toggle, H1, H4, type SelectOption } from "@/app/components/ui";
 
 interface Props {
   initialData?: Product;
@@ -14,10 +15,6 @@ interface Props {
 
 type ProductFormData = Omit<Product, "id" | "createdAt" | "updatedAt">;
 
-const inp =
-  "w-full bg-white border border-slate-200 rounded-lg px-6 py-4 text-sm font-normal focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-300";
-const area =
-  "w-full bg-white border border-slate-200 rounded-4xl px-6 py-5 text-sm font-normal focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-300 resize-none";
 const lbl = "text-caption text-slate-400 block mb-2 ml-5";
 
 interface InternalNutritionSpec {
@@ -60,6 +57,24 @@ const EMPTY: InternalFormData = {
   seoTitle: "",
   seoDescription: "",
 };
+
+const VISIBILITY_FLAGS = [
+  {
+    key: "isFeatured" as const,
+    label: "Homepage Spotlight",
+    desc: "Feature this product in the main landing carousel",
+  },
+  {
+    key: "isBestseller" as const,
+    label: "Bestseller Status",
+    desc: "Mark as a popular choice to drive more interest",
+  },
+  {
+    key: "isNew" as const,
+    label: "New Arrival",
+    desc: 'Add a "New" badge for recent catalog updates',
+  },
+];
 
 export default function ProductForm({ initialData, mode }: Props) {
   const router = useRouter();
@@ -116,8 +131,13 @@ export default function ProductForm({ initialData, mode }: Props) {
   const posterInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetchCategories().then(setCategories);
+    fetchCategories({ all: true }).then((res) => setCategories(res.data ?? []));
   }, []);
+
+  const categoryOptions: SelectOption[] = [
+    { label: "Select Category", value: "" },
+    ...categories.map((c) => ({ label: c.name, value: c.id })),
+  ];
 
   async function handleImageUpload(file: File) {
     setUploadError("");
@@ -305,14 +325,14 @@ export default function ProductForm({ initialData, mode }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-10 max-w-4xl mx-auto space-y-12 pb-32 animate-in fade-in duration-500"
+      className="p-6 sm:p-10 max-w-4xl mx-auto space-y-12 pb-32 animate-in fade-in duration-500"
     >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-4">
         <div className="space-y-3">
-          <h1 className="text-slate-900 tracking-tighter leading-none text-balance">
+          <H1 className="text-slate-900 tracking-tighter leading-none text-balance">
             {mode === "create" ? "New Product" : `Edit: ${form.name}`}
-          </h1>
+          </H1>
           {form.slug && (
             <p className="text-[10px] font-mono text-slate-400 bg-slate-50 px-3 py-1 rounded-lg w-fit tracking-tighter italic">
               URL: /products/{form.slug}
@@ -320,85 +340,71 @@ export default function ProductForm({ initialData, mode }: Props) {
           )}
         </div>
         <div className="flex gap-4 shrink-0">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="text-caption px-8 py-3.5 border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-100 rounded-lg transition-all"
-          >
+          <Button type="button" variant="secondary" onClick={() => router.back()} className="hover:text-red-500 hover:border-red-100">
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={saving}
-            className="text-caption px-8 py-3.5 bg-slate-900 text-white hover:bg-emerald-600 rounded-lg transition-all disabled:opacity-50 active:scale-95 shadow-2xl shadow-slate-900/10"
-          >
-            {saving
-              ? "Saving..."
-              : mode === "create"
-                ? "Add Product"
-                : "Save Changes"}
-          </button>
+          </Button>
+          <Button type="submit" loading={saving} className="shadow-2xl shadow-slate-900/10">
+            {mode === "create" ? "Add Product" : "Save Changes"}
+          </Button>
         </div>
       </div>
 
       {/* Basic Info */}
       <section className="bg-slate-50 rounded-5xl p-8 space-y-6 border border-slate-100">
-        <h4 className="text-slate-900 px-4">Basic Info</h4>
+        <H4 className="text-slate-900 px-4">Basic Info</H4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Product Name *</label>
-            <input
-              value={form.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              className={inp}
-              required
-              placeholder="Full Product Name"
-            />
-          </div>
+          <Field
+            label="Product Name"
+            required
+            value={form.name}
+            onValueChange={handleNameChange}
+            placeholder="Full Product Name"
+          />
           <div className="space-y-1.5">
             <label className={lbl}>URL Slug *</label>
             <div className="flex gap-2">
-              <input
+              <Field
                 value={form.slug}
-                onChange={(e) => handleSlugChange(e.target.value)}
-                className={inp}
+                onValueChange={handleSlugChange}
                 required
                 placeholder="url-safe-slug"
+                wrapperClassName="flex-1"
               />
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={() => {
                   setSlugManual(false);
                   patch("slug", generateSlug(form.name));
                 }}
-                className="text-caption px-4 bg-white border border-slate-200 text-slate-400 rounded-lg hover:text-emerald-600 hover:border-emerald-100 transition-all h-12"
+                className="shrink-0"
                 style={{ fontSize: "9px" }}
               >
                 Auto
-              </button>
+              </Button>
             </div>
             {slugError && <p className="text-caption text-red-500 ml-5 mt-2" style={{ fontSize: "9px" }}>{slugError}</p>}
           </div>
         </div>
 
-        <div className="space-y-1.5 px-4">
-          <label className={lbl}>Short Description *</label>
-          <input
-            value={form.shortDescription}
-            onChange={(e) => patch("shortDescription", e.target.value)}
-            className={inp}
+        <div className="px-4">
+          <Field
+            label="Short Description"
             required
+            value={form.shortDescription}
+            onValueChange={(v) => patch("shortDescription", v)}
             placeholder="High-impact summary for product cards"
           />
         </div>
 
-        <div className="space-y-1.5 px-4">
-          <label className={lbl}>Full Description</label>
-          <textarea
+        <div className="px-4">
+          <Field
+            label="Full Description"
+            type="textarea"
             value={form.fullDescription}
-            onChange={(e) => patch("fullDescription", e.target.value)}
-            className={`${area} h-32`}
+            onValueChange={(v) => patch("fullDescription", v)}
+            className="h-32"
             placeholder="Deep dive into product benefits and details..."
           />
         </div>
@@ -406,60 +412,47 @@ export default function ProductForm({ initialData, mode }: Props) {
 
       {/* Pricing & Category */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">Pricing &amp; Category</h4>
+        <H4 className="text-slate-900 px-4">Pricing &amp; Category</H4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Price (&#8358;) *</label>
-            <input
-              type="number"
-              min="0"
-              value={form.price}
-              onChange={(e) => patch("price", +e.target.value)}
-              className={inp}
-              required
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>Unit *</label>
-            <input
-              value={form.unit}
-              onChange={(e) => patch("unit", e.target.value)}
-              className={inp}
-              required
-              placeholder="e.g. 1kg, Pack of 10"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>Category</label>
-            <select
-              value={form.categoryId}
-              onChange={(e) => patch("categoryId", e.target.value)}
-              className={inp}
-            >
-              <option value="">Select Category</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Field
+            label="Price (₦)"
+            type="number"
+            required
+            min={0}
+            value={form.price}
+            onValueChange={(v) => patch("price", +v)}
+          />
+          <Field
+            label="Unit"
+            required
+            value={form.unit}
+            onValueChange={(v) => patch("unit", v)}
+            placeholder="e.g. 1kg, Pack of 10"
+          />
+          <Field
+            label="Category"
+            type="select"
+            options={categoryOptions}
+            value={form.categoryId}
+            onValueChange={(v) => patch("categoryId", v)}
+          />
         </div>
       </section>
 
       {/* Images */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
         <div className="flex items-center justify-between px-4">
-          <h4 className="text-slate-900">Product Images</h4>
-          <button
+          <H4 className="text-slate-900">Product Images</H4>
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={() => imageInputRef.current?.click()}
-            disabled={uploadingImage}
-            className="text-caption px-4 py-2 border border-slate-200 text-slate-500 rounded-lg hover:text-emerald-600 hover:border-emerald-200 transition-all disabled:opacity-50"
+            loading={uploadingImage}
             style={{ fontSize: "9px" }}
           >
             {uploadingImage ? "Uploading..." : "+ Upload Image"}
-          </button>
+          </Button>
           <input
             ref={imageInputRef}
             type="file"
@@ -529,7 +522,7 @@ export default function ProductForm({ initialData, mode }: Props) {
 
       {/* Manufacturing Process Video */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">Manufacturing Process Video</h4>
+        <H4 className="text-slate-900 px-4">Manufacturing Process Video</H4>
         <p className="px-4 text-sm font-normal text-slate-400">
           Optional. If no video is uploaded, this product simply won&apos;t appear in the manufacturing showcase — nothing broken shows on the site.
         </p>
@@ -544,14 +537,9 @@ export default function ProductForm({ initialData, mode }: Props) {
                   className="w-24 h-16 rounded-xl object-cover bg-slate-100 border border-slate-100"
                   muted
                 />
-                <button
-                  type="button"
-                  onClick={() => patchVideo("videoUrl", "")}
-                  className="text-caption text-red-500 hover:text-red-600"
-                  style={{ fontSize: "9px" }}
-                >
+                <Button type="button" variant="ghost" size="sm" onClick={() => patchVideo("videoUrl", "")} style={{ fontSize: "9px" }}>
                   Remove Video
-                </button>
+                </Button>
               </div>
             ) : (
               <button
@@ -583,14 +571,9 @@ export default function ProductForm({ initialData, mode }: Props) {
                 <div className="relative w-24 h-16 rounded-xl overflow-hidden border border-slate-100">
                   <Image src={form.processVideo.posterUrl} alt="" fill className="object-cover" />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => patchVideo("posterUrl", "")}
-                  className="text-caption text-red-500 hover:text-red-600"
-                  style={{ fontSize: "9px" }}
-                >
+                <Button type="button" variant="ghost" size="sm" onClick={() => patchVideo("posterUrl", "")} style={{ fontSize: "9px" }}>
                   Remove Poster
-                </button>
+                </Button>
               </div>
             ) : (
               <button
@@ -618,47 +601,40 @@ export default function ProductForm({ initialData, mode }: Props) {
 
         {form.processVideo?.videoUrl && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-            <div className="space-y-1.5">
-              <label className={lbl}>Video Title</label>
-              <input
-                value={form.processVideo.title}
-                onChange={(e) => patchVideo("title", e.target.value)}
-                className={inp}
-                placeholder="How We Make This Product"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className={lbl}>Duration (optional)</label>
-              <input
-                value={form.processVideo.duration ?? ""}
-                onChange={(e) => patchVideo("duration", e.target.value)}
-                className={inp}
-                placeholder="1:10"
-              />
-            </div>
+            <Field
+              label="Video Title"
+              value={form.processVideo.title}
+              onValueChange={(v) => patchVideo("title", v)}
+              placeholder="How We Make This Product"
+            />
+            <Field
+              label="Duration (optional)"
+              value={form.processVideo.duration ?? ""}
+              onValueChange={(v) => patchVideo("duration", v)}
+              placeholder="1:10"
+            />
           </div>
         )}
       </section>
 
       {/* Inventory */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">Stock</h4>
+        <H4 className="text-slate-900 px-4">Stock</H4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Stock Quantity *</label>
-            <input
+          <div>
+            <Field
+              label="Stock Quantity"
               type="number"
-              min="0"
+              required
+              min={0}
               value={form.stockCount ?? 0}
-              onChange={(e) => {
-                const val = +e.target.value;
+              onValueChange={(v) => {
+                const val = +v;
                 patch("stockCount", val);
                 // Auto-toggle inStock if stock is added to a previously out-of-stock item
                 if (val > 0 && !form.inStock) patch("inStock", true);
                 if (val === 0 && form.inStock) patch("inStock", false);
               }}
-              className={inp}
-              required
             />
             <p className="text-caption text-slate-400 mt-3 ml-5" style={{ fontSize: "10px" }}>
               Current state:{" "}
@@ -679,44 +655,28 @@ export default function ProductForm({ initialData, mode }: Props) {
           </div>
           <div className="space-y-1.5">
             <label className={lbl}>Availability</label>
-            <button
-              type="button"
-              onClick={() => patch("inStock", !form.inStock)}
-              className={`w-full h-12 rounded-lg border transition-all flex items-center justify-center gap-3 px-6 ${
-                form.inStock
-                  ? "bg-emerald-50 border-emerald-100 text-emerald-700"
-                  : "bg-red-50 border-red-100 text-red-700"
-              }`}
-            >
-              <div
-                className={`w-2 h-2 rounded-full animate-pulse ${
-                  form.inStock ? "bg-emerald-500" : "bg-red-500"
-                }`}
-              />
-              <span className="text-caption" style={{ fontSize: "10px" }}>
-                {form.inStock ? "Currently in stock" : "Out of stock"}
-              </span>
-            </button>
+            <Toggle
+              checked={form.inStock}
+              onChange={(checked) => patch("inStock", checked)}
+              label={form.inStock ? "Currently in stock" : "Out of stock"}
+            />
             <p className="text-xs font-normal text-slate-400 mt-3 ml-5 leading-tight">
               Manually override product availability regardless of count.
             </p>
           </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>NAFDAC Number</label>
-            <input
-              value={form.nafdacNumber as any}
-              onChange={(e) => patch("nafdacNumber", e.target.value as any)}
-              className={inp}
-              placeholder="REG NO."
-            />
-          </div>
+          <Field
+            label="NAFDAC Number"
+            value={form.nafdacNumber ?? ""}
+            onValueChange={(v) => patch("nafdacNumber", v)}
+            placeholder="REG NO."
+          />
         </div>
       </section>
 
       {/* Variants */}
       <section className="bg-slate-50 rounded-5xl p-8 space-y-6 border border-slate-100">
         <div className="flex items-center justify-between px-4">
-          <h4 className="text-slate-900">Variants</h4>
+          <H4 className="text-slate-900">Variants</H4>
           <button
             type="button"
             onClick={addVariant}
@@ -778,7 +738,7 @@ export default function ProductForm({ initialData, mode }: Props) {
       {/* Nutrition Specs */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
         <div className="flex items-center justify-between px-4">
-          <h4 className="text-slate-900">Nutrition Facts</h4>
+          <H4 className="text-slate-900">Nutrition Facts</H4>
           <button
             type="button"
             onClick={addSpec}
@@ -827,29 +787,24 @@ export default function ProductForm({ initialData, mode }: Props) {
 
       {/* Certifications */}
       <section className="bg-slate-50 rounded-5xl p-8 space-y-6 border border-slate-100">
-        <h4 className="text-slate-900 px-4">Certifications</h4>
+        <H4 className="text-slate-900 px-4">Certifications</H4>
         <div className="space-y-4 px-4">
           <div className="flex gap-2">
-            <input
+            <Field
               value={certInput}
-              onChange={(e) => setCertInput(e.target.value)}
+              onValueChange={setCertInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
                   addCert();
                 }
               }}
-              className="flex-1 bg-white border border-slate-200 rounded-lg px-6 py-3 text-sm font-normal focus:outline-none focus:border-emerald-500 transition-all"
               placeholder="Tag... (e.g. Organic)"
+              wrapperClassName="flex-1"
             />
-            <button
-              type="button"
-              onClick={addCert}
-              className="text-caption px-6 bg-slate-900 text-white rounded-lg hover:bg-emerald-600 transition-all"
-              style={{ fontSize: "9px" }}
-            >
+            <Button type="button" onClick={addCert} style={{ fontSize: "9px" }}>
               Add
-            </button>
+            </Button>
           </div>
           {form.certifications.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -876,65 +831,30 @@ export default function ProductForm({ initialData, mode }: Props) {
 
       {/* Visibility */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">Visibility</h4>
+        <H4 className="text-slate-900 px-4">Visibility</H4>
         <div className="space-y-3 px-4">
-          {(
-            [
-              {
-                key: "isFeatured",
-                label: "Homepage Spotlight",
-                desc: "Feature this product in the main landing carousel",
-              },
-              {
-                key: "isBestseller",
-                label: "Bestseller Status",
-                desc: "Mark as a popular choice to drive more interest",
-              },
-              {
-                key: "isNew",
-                label: "New Arrival",
-                desc: 'Add a "New" badge for recent catalog updates',
-              },
-            ] as const
-          ).map(({ key, label, desc }) => (
-            <label
+          {VISIBILITY_FLAGS.map(({ key, label, desc }) => (
+            <Toggle
               key={key}
-              className="flex items-center gap-6 p-5 rounded-3xl bg-slate-50 border border-slate-100 cursor-pointer select-none transition-all hover:bg-slate-100/70 group"
-            >
-              <button
-                type="button"
-                role="switch"
-                aria-checked={form[key]}
-                onClick={() => setForm((f) => ({ ...f, [key]: !f[key] }))}
-                className={`relative w-10 h-5 rounded-lg transition-all shrink-0 ${form[key] ? "bg-emerald-500" : "bg-slate-200"}`}
-              >
-                <div
-                  className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${form[key] ? "right-1" : "left-1"}`}
-                />
-              </button>
-              <div>
-                <p className="text-caption text-slate-900" style={{ fontSize: "12px" }}>
-                  {label}
-                </p>
-                <p className="text-xs font-normal text-slate-400 tracking-tight mt-0.5">
-                  {desc}
-                </p>
-              </div>
-            </label>
+              checked={form[key]}
+              onChange={(checked) => setForm((f) => ({ ...f, [key]: checked }))}
+              label={label}
+              description={desc}
+              className="w-full"
+            />
           ))}
         </div>
       </section>
 
       {/* SEO */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">SEO</h4>
+        <H4 className="text-slate-900 px-4">SEO</H4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Meta Title</label>
-            <input
+          <div>
+            <Field
+              label="Meta Title"
               value={form.seoTitle}
-              onChange={(e) => patch("seoTitle", e.target.value)}
-              className={inp}
+              onValueChange={(v) => patch("seoTitle", v)}
               placeholder="Defaults to product name"
               maxLength={60}
             />
@@ -944,12 +864,13 @@ export default function ProductForm({ initialData, mode }: Props) {
               </span>
             </div>
           </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>Meta Description</label>
-            <textarea
+          <div>
+            <Field
+              label="Meta Description"
+              type="textarea"
               value={form.seoDescription}
-              onChange={(e) => patch("seoDescription", e.target.value)}
-              className={`${area} h-24`}
+              onValueChange={(v) => patch("seoDescription", v)}
+              className="h-24"
               placeholder="Search engine snippet..."
               maxLength={160}
             />
@@ -964,26 +885,12 @@ export default function ProductForm({ initialData, mode }: Props) {
 
       {/* Bottom save actions */}
       <div className="flex justify-end gap-6 pt-10 border-t border-slate-50">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="text-caption text-slate-400 hover:text-red-500 transition-all"
-          style={{ fontSize: "10px" }}
-        >
+        <Button type="button" variant="ghost" onClick={() => router.back()} style={{ fontSize: "10px" }}>
           Discard
-        </button>
-        <button
-          type="submit"
-          disabled={saving}
-          className="text-caption px-12 py-5 bg-slate-900 text-white hover:bg-emerald-600 rounded-lg transition-all disabled:opacity-50 active:scale-95 shadow-2xl shadow-black/10"
-          style={{ fontSize: "12px" }}
-        >
-          {saving
-            ? "Saving..."
-            : mode === "create"
-              ? "Add Product"
-              : "Save Changes"}
-        </button>
+        </Button>
+        <Button type="submit" loading={saving} className="px-12 shadow-2xl shadow-black/10" style={{ fontSize: "12px" }}>
+          {mode === "create" ? "Add Product" : "Save Changes"}
+        </Button>
       </div>
     </form>
   );

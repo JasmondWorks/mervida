@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { fetchProducts, fetchCategories, fetchOrders } from "@/app/lib/api-client";
+import { H1, H4 } from "@/app/components/ui";
 import type { Product, Order, Category } from "@/app/lib/types";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -76,9 +77,9 @@ export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetchProducts().then(setProducts);
-    fetchOrders().then(setOrders);
-    fetchCategories().then(setCategories);
+    fetchProducts({ all: true }).then((res) => setProducts(res.data ?? []));
+    fetchOrders({ all: true }).then((res) => setOrders(res.data ?? []));
+    fetchCategories({ all: true }).then((res) => setCategories(res.data ?? []));
   }, []);
 
   const catCount = categories.length;
@@ -94,9 +95,9 @@ export default function AdminDashboard() {
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-700">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-slate-950 tracking-tight leading-none" style={{ fontSize: "1.5rem" }}>
+          <H1 className="text-slate-950 tracking-tight leading-none" style={{ fontSize: "1.5rem" }}>
             Dashboard
-          </h1>
+          </H1>
           <p className="text-slate-400 font-normal text-[11px]">
             GFO Foods Limited &mdash; today&rsquo;s snapshot
           </p>
@@ -146,9 +147,9 @@ export default function AdminDashboard() {
         {/* Products quick view */}
         <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-xs">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-50 bg-slate-50/30">
-            <h4 className="text-slate-950" style={{ fontSize: "12px" }}>
+            <H4 className="text-slate-950" style={{ fontSize: "12px" }}>
               Inventory Snapshot
-            </h4>
+            </H4>
             <Link
               href="/admin/products"
               className="text-caption text-slate-400 hover:text-emerald-600 transition-colors"
@@ -214,9 +215,9 @@ export default function AdminDashboard() {
         {/* Recent orders */}
         <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-xs">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-50 bg-slate-50/30">
-            <h4 className="text-slate-950" style={{ fontSize: "12px" }}>
+            <H4 className="text-slate-950" style={{ fontSize: "12px" }}>
               Recent Transactions
-            </h4>
+            </H4>
             <Link
               href="/admin/orders"
               className="text-caption text-slate-400 hover:text-emerald-600 transition-colors"

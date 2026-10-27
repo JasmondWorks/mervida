@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartContext";
 import { fetchCategories } from "@/app/lib/api-client";
 import type { Category } from "@/app/lib/types";
+import GfoWordmark from "./GfoWordmark";
 
 const PERSONAL_SHOPPING_LINKS = [
   { label: "Shop for the Diaspora", href: "/personal-shopping/diaspora" },
@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { label: "Shop", href: "/products" },
   { label: "Personal Shopping", href: "/personal-shopping" },
   { label: "Bulk Orders", href: "/bulk-orders" },
+  { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -49,7 +50,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useEffect(() => {
-    fetchCategories().then(setCategories);
+    fetchCategories({ all: true }).then((res) => setCategories(res.data ?? []));
     function onScroll() {
       setScrolled(window.scrollY > 20);
     }
@@ -102,31 +103,11 @@ export default function Navbar() {
       >
         <div className="max-w-[1440px] mx-auto px-6 sm:px-12 flex items-center justify-between transition-colors duration-500">
           <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <Image
-              src="/images/mervida-logo.png"
-              alt="Mervida Logo"
-              width={128}
-              height={40}
-              className={`h-9 w-auto object-contain transition-all duration-500 group-hover:scale-105 ${isDarkTheme ? "brightness-0 invert" : ""}`}
-              priority
-            />
-            <span
-              className={`font-display font-bold text-xl sm:text-2xl tracking-tighter transition-colors duration-500 ${
-                isDarkTheme ? "text-white" : "text-slate-950"
-              }`}
-            >
-              MERVIDA
-            </span>
+            <GfoWordmark size="lg" dark={isDarkTheme} />
           </Link>
 
-          {/* Desktop Navigation - Dynamic Style */}
-          <nav
-            className={`hidden md:flex items-center gap-1 p-1 rounded-lg border transition-all duration-500 ${
-              isDarkTheme
-                ? "border-white/10 bg-white/5 backdrop-blur-md"
-                : "border-slate-100 bg-slate-50"
-            }`}
-          >
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1 p-1 rounded-lg transition-all duration-500">
             {NAV_LINKS.map((link) => (
               <div
                 key={link.href}
@@ -195,14 +176,14 @@ export default function Navbar() {
                       <Link
                         key={cat.id}
                         href={`/products?category=${cat.id}`}
-                        className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+                        className="block px-4 py-2.5 rounded-lg text-[13px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-all"
                       >
                         {cat.name}
                       </Link>
                     ))}
                     <Link
                       href="/products"
-                      className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
+                      className="block px-4 py-2.5 rounded-lg text-[13px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
                     >
                       View All Products
                     </Link>
@@ -227,14 +208,14 @@ export default function Navbar() {
                       <Link
                         key={ps.href}
                         href={ps.href}
-                        className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+                        className="block px-4 py-2.5 rounded-lg text-[13px] font-semibold text-slate-600 hover:bg-slate-50 hover:text-emerald-700 transition-all"
                       >
                         {ps.label}
                       </Link>
                     ))}
                     <Link
                       href="/personal-shopping"
-                      className="block px-4 py-3 rounded-2xl text-[12px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
+                      className="block px-4 py-2.5 rounded-lg text-[13px] font-semibold text-slate-900 bg-slate-50 hover:bg-slate-100 transition-all mt-2"
                     >
                       View All Services
                     </Link>
@@ -345,16 +326,7 @@ export default function Navbar() {
             {/* Header in sidebar */}
             <div className="flex items-center justify-between mb-10">
               <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2.5">
-                <Image
-                  src="/images/mervida-logo.png"
-                  alt="Mervida Logo"
-                  width={100}
-                  height={32}
-                  className="h-8 w-auto object-contain"
-                />
-                <span className="font-display font-bold text-xl tracking-tighter text-slate-950">
-                  MERVIDA
-                </span>
+                <GfoWordmark size="md" />
               </Link>
               <button
                 onClick={() => setMenuOpen(false)}
@@ -382,7 +354,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className={`flex items-center justify-between py-4 border-b border-slate-50 text-xl font-bold tracking-tight transition-colors ${
+                    className={`flex items-center justify-between py-3 border-b border-slate-50 text-base font-semibold tracking-tight transition-colors ${
                       isActive(link.href)
                         ? "text-emerald-700"
                         : "text-slate-900 hover:text-emerald-600"
@@ -390,7 +362,7 @@ export default function Navbar() {
                   >
                     {link.label}
                     <svg
-                      className={`w-5 h-5 opacity-30 group-hover:opacity-100 transition-all ${isActive(link.href) ? "opacity-100 text-emerald-700" : ""}`}
+                      className={`w-4 h-4 opacity-30 group-hover:opacity-100 transition-all ${isActive(link.href) ? "opacity-100 text-emerald-700" : ""}`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -405,13 +377,13 @@ export default function Navbar() {
                   </Link>
 
                   {link.label === "Shop" && categories.length > 0 && (
-                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l border-slate-200 my-2">
+                    <div className="grid grid-cols-1 gap-1 py-1.5 pl-3 border-l border-slate-100 my-1">
                       {categories.map((cat) => (
                         <Link
                           key={cat.id}
                           href={`/products?category=${cat.id}`}
                           onClick={() => setMenuOpen(false)}
-                          className="py-2 text-[14px] font-semibold text-slate-500 hover:text-emerald-600 transition-colors"
+                          className="py-1 text-xs font-normal text-slate-500 hover:text-emerald-600 transition-colors"
                         >
                           {cat.name}
                         </Link>
@@ -420,13 +392,13 @@ export default function Navbar() {
                   )}
 
                   {link.label === "Personal Shopping" && (
-                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l border-slate-200 my-2">
+                    <div className="grid grid-cols-1 gap-1 py-1.5 pl-3 border-l border-slate-100 my-1">
                       {PERSONAL_SHOPPING_LINKS.map((ps) => (
                         <Link
                           key={ps.href}
                           href={ps.href}
                           onClick={() => setMenuOpen(false)}
-                          className="py-2 text-[14px] font-semibold text-slate-500 hover:text-emerald-600 transition-colors"
+                          className="py-1 text-xs font-normal text-slate-500 hover:text-emerald-600 transition-colors"
                         >
                           {ps.label}
                         </Link>

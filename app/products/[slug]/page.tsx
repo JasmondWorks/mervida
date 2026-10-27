@@ -24,7 +24,9 @@ export default function ProductDetailPage() {
   const { addItem } = useCart();
 
   useEffect(() => {
-    Promise.all([fetchProducts(), fetchCategories()]).then(([all, cats]) => {
+    Promise.all([fetchProducts({ all: true }), fetchCategories({ all: true })]).then(([resProducts, resCats]) => {
+      const all = resProducts.data ?? [];
+      const cats = resCats.data ?? [];
       const found = all.find((p) => p.slug === slug);
       if (!found) {
         setNotFound(true);
@@ -46,7 +48,7 @@ export default function ProductDetailPage() {
 
   function buildSingleProductWhatsApp() {
     if (!product) return "#";
-    const msg = `Hello GFO Foods! I would like to order:\n\n\u2022 ${product.name} (${product.unit}) \u00d7 ${quantity} \u2014 \u20a6${(product.price * quantity).toLocaleString()}\n\nEstimated Total: \u20a6${(product.price * quantity).toLocaleString()}\n\nKindly confirm my order and provide payment details. Thank you!`;
+    const msg = `Hello Mervida! I would like to order:\n\n• ${product.name} (${product.unit}) × ${quantity} — ₦${(product.price * quantity).toLocaleString()}\n\nEstimated Subtotal: ₦${(product.price * quantity).toLocaleString()}\nDelivery Location (City / State): [Please enter your area]\n\nKindly confirm availability and total with delivery. Thank you!`;
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
   }
 
@@ -169,14 +171,21 @@ export default function ProductDetailPage() {
 
           <div className="flex items-center gap-6">
             {isOutOfStock ? (
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] bg-red-50 text-red-600 border border-red-100 px-6 py-2 rounded-lg">
-                Sold out temporarily
+              <span className="text-xs font-semibold bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-lg">
+                Temporarily out of stock
               </span>
+            ) : (product.stockCount ?? 0) <= 10 ? (
+              <div className="flex items-center gap-2.5 bg-amber-50 text-amber-700 px-4 py-2 rounded-lg border border-amber-200/60">
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                <span className="text-xs font-semibold whitespace-nowrap">
+                  Only {product.stockCount} left in stock
+                </span>
+              </div>
             ) : (
-              <div className="flex items-center gap-3 bg-emerald-50 text-emerald-700 px-5 py-2.5 rounded-lg border border-emerald-100">
-                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                <span className="text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">
-                  {product.stockCount ?? 0} Units left in stock
+              <div className="flex items-center gap-2.5 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg border border-emerald-100">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                <span className="text-xs font-semibold whitespace-nowrap">
+                  In Stock • Ready to dispatch
                 </span>
               </div>
             )}
@@ -209,13 +218,13 @@ export default function ProductDetailPage() {
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`h-16 w-full rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${
+              className={`h-14 w-full rounded-lg font-semibold text-xs tracking-wide transition-all flex items-center justify-center gap-3 ${
                 isOutOfStock
-                  ? "bg-slate-50 text-slate-300 border border-slate-100"
-                  : "bg-slate-950 text-white hover:bg-emerald-600 shadow-2xl shadow-emerald-500/10"
+                  ? "bg-slate-50 text-slate-300 border border-slate-100 cursor-not-allowed"
+                  : "bg-slate-900 text-white hover:bg-emerald-600 shadow-xl shadow-slate-900/10 cursor-pointer"
               } active:scale-[0.98]`}
             >
-              {isOutOfStock ? "Sold Out" : "Add to shopping bag"}
+              {isOutOfStock ? "Sold Out" : "Add to Cart"}
             </button>
 
             {!isOutOfStock && whatsappNumber && (
@@ -223,9 +232,9 @@ export default function ProductDetailPage() {
                 href={buildSingleProductWhatsApp()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-16 w-full border border-slate-200 text-slate-500 hover:text-slate-950 hover:bg-slate-50 transition-all rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] flex items-center justify-center"
+                className="h-14 w-full border border-slate-200 text-slate-700 hover:text-slate-950 hover:bg-slate-50 transition-all rounded-lg font-semibold text-xs tracking-wide flex items-center justify-center"
               >
-                Checkout on WhatsApp
+                Order on WhatsApp
               </a>
             )}
           </div>

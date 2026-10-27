@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { fetchBlogPostBySlug, type BlogPost } from "@/app/lib/api-client";
 
+import { Button } from "@/app/components/ui";
+
 function estimateReadingTime(html: string): number {
   const words = html
     .replace(/<[^>]*>/g, " ")
@@ -29,9 +31,9 @@ export default function BlogPostPage() {
   if (notFound) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-32 text-center">
-        <p className="text-slate-400 text-sm font-medium">Post not found.</p>
-        <Link href="/blog" className="text-emerald-600 text-sm font-bold mt-4 inline-block">
-          Back to The Journal
+        <p className="text-slate-400 text-sm font-normal">Post not found.</p>
+        <Link href="/blog" className="text-emerald-600 text-sm font-semibold mt-4 inline-block">
+          Back to Blog
         </Link>
       </div>
     );
@@ -43,18 +45,33 @@ export default function BlogPostPage() {
 
   return (
     <article className="bg-[#faf9f7]">
+      {post.status === "draft" && (
+        <div className="bg-amber-50 border-b border-amber-200/80 px-6 py-2.5 text-center text-xs text-amber-900 font-normal flex flex-wrap items-center justify-center gap-2">
+          <span className="font-semibold px-2 py-0.5 rounded bg-amber-100 text-[10px] uppercase tracking-wider">
+            Draft Preview
+          </span>
+          <span>This post is unpublished and only visible to logged-in admins.</span>
+          <Link
+            href={`/admin/blog/${post.id}/edit`}
+            className="underline font-semibold text-amber-950 hover:text-black ml-1"
+          >
+            Edit in Admin
+          </Link>
+        </div>
+      )}
+
       {/* Hero */}
       <header className="max-w-3xl mx-auto px-6 sm:px-0 pt-16 sm:pt-24 pb-10">
         <Link
           href="/blog"
-          className="text-[10px] font-bold uppercase tracking-[0.3em] text-emerald-600 hover:text-emerald-700 transition-colors"
+          className="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-600 hover:text-emerald-700 transition-colors"
         >
-          ← The Journal
+          ← Blog
         </Link>
-        <h1 className="text-3xl sm:text-5xl font-display font-bold tracking-tighter text-slate-950 mt-6 mb-5 leading-[1.08]">
+        <h1 className="text-3xl sm:text-5xl font-display font-extrabold tracking-tight text-slate-950 mt-6 mb-5 leading-[1.08]">
           {post.title}
         </h1>
-        <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+        <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
           <span>
             {new Date(publishedDate).toLocaleDateString("en-NG", {
               day: "numeric",
@@ -69,7 +86,7 @@ export default function BlogPostPage() {
 
       {post.coverImage && (
         <div className="max-w-5xl mx-auto px-6 sm:px-0 mb-14">
-          <div className="relative aspect-video rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-xl shadow-slate-900/5">
+          <div className="relative aspect-video rounded-4xl overflow-hidden border border-border">
             <Image src={post.coverImage} alt={post.title} fill priority className="object-cover" />
           </div>
         </div>
@@ -81,15 +98,14 @@ export default function BlogPostPage() {
         <div className="mt-16 pt-10 border-t border-slate-200 flex items-center justify-between">
           <Link
             href="/blog"
-            className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400 hover:text-emerald-600 transition-colors"
+            className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 hover:text-emerald-600 transition-colors"
           >
-            ← More from The Journal
+            ← More from the Blog
           </Link>
-          <Link
-            href="/products"
-            className="px-6 py-3 bg-slate-950 text-white rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all"
-          >
-            Shop the Range
+          <Link href="/products">
+            <Button>
+              Shop the Range
+            </Button>
           </Link>
         </div>
       </div>

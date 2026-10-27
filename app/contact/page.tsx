@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchSettings } from "@/app/lib/api-client";
+import { Button, Field } from "@/app/components/ui";
 
 export default function ContactPage() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -154,75 +155,46 @@ export default function ContactPage() {
         </div>
 
         {/* Right: Form */}
-        <div className="bg-white rounded-5xl p-10 shadow-2xl shadow-slate-950/5 border border-slate-100">
-          <h2 className="text-xl font-display font-bold text-slate-950 mb-2 tracking-tight">
+        <div className="bg-white rounded-5xl p-8 sm:p-10 shadow-2xl shadow-slate-950/5 border border-slate-100">
+          <h2 className="text-2xl font-display font-bold text-slate-950 mb-1.5 tracking-tight">
             Direct Messaging
           </h2>
-          <p className="text-slate-500 font-medium text-sm mb-10">
+          <p className="text-slate-500 font-normal text-sm mb-8">
             Send a priority brief for administrative review.
           </p>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
-              >
-                Your nomenclature
-              </label>
-              <input
-                id="name"
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
-                placeholder="Full Name"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
-              >
-                Contact email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
-                placeholder="email@example.com"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5"
-              >
-                Message scope
-              </label>
-              <textarea
-                id="message"
-                required
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={5}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-3xl px-6 py-4 text-sm outline-none transition-all resize-none placeholder:text-slate-300"
-                placeholder="Describe your requirements..."
-              />
-            </div>
-            <button
+            <Field
+              label="Full Name"
+              required
+              value={name}
+              onValueChange={setName}
+              placeholder="Full Name"
+            />
+            <Field
+              label="Contact email"
+              type="email"
+              value={email}
+              onValueChange={setEmail}
+              placeholder="email@example.com"
+            />
+            <Field
+              label="Message scope"
+              type="textarea"
+              required
+              rows={5}
+              value={message}
+              onValueChange={setMessage}
+              placeholder="Describe your requirements..."
+            />
+            <Button
               type="submit"
               disabled={!whatsappNumber}
-              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/5 ${
-                !whatsappNumber ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className="w-full"
             >
               {whatsappNumber
-                ? "Transmit via WhatsApp"
+                ? "Send Message via WhatsApp"
                 : "WhatsApp not configured"}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

@@ -94,7 +94,8 @@ export default function HomePage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetchProducts().then((all) => {
+    fetchProducts({ all: true }).then((res) => {
+      const all = res.data ?? [];
       setAllProducts(all);
       setFeatured(all.filter((p) => p.isFeatured || p.isBestseller).slice(0, 4));
     });
@@ -120,7 +121,7 @@ export default function HomePage() {
             href="/products"
             className="hidden sm:inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-slate-400 hover:text-emerald-700 transition-all border-b border-transparent hover:border-emerald-700 pb-1"
           >
-            View all collection &rarr;
+            View full collection &rarr;
           </Link>
         </div>
 
@@ -132,7 +133,7 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="bg-slate-50 border border-slate-100 rounded-4xl p-16 text-center animate-fade-in transition-all">
-            <p className="text-slate-400 font-medium italic">
+            <p className="text-slate-400 font-normal italic">
               Featured products arriving soon.
             </p>
           </div>
@@ -166,7 +167,7 @@ export default function HomePage() {
               <br />
               100% Real Sourcing.
             </h2>
-            <p className="text-slate-500 text-base sm:text-lg leading-relaxed max-w-md mb-10 font-medium">
+            <p className="text-slate-500 text-base sm:text-lg leading-relaxed max-w-md mb-10 font-normal">
               GFO FOODS LIMITED processes pure, natural African ingredients so families and businesses never have to depend on artificially modified foods, chemical fillers, or synthetic additives.
             </p>
             <Link
@@ -230,7 +231,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-display font-bold text-slate-950 mb-4 tracking-tight">
                   {service.title}
                 </h3>
-                <p className="text-slate-500 text-[13px] leading-relaxed group-hover:text-slate-700 transition-colors font-medium">
+                <p className="text-slate-500 text-[13px] leading-relaxed group-hover:text-slate-700 transition-colors font-normal">
                   {service.description}
                 </p>
               </div>
@@ -261,7 +262,7 @@ export default function HomePage() {
             {[
               {
                 q: "How do I place an order?",
-                a: "Browse our products, add items to your cart, then click 'Checkout via WhatsApp'. We will confirm your order and provide payment details directly.",
+                a: "Browse our products, add items to your cart, then click 'Complete Order on WhatsApp'. We will confirm your delivery address, calculate courier fees, and provide payment details directly.",
               },
               {
                 q: "Are the products natural/organic?",
@@ -279,7 +280,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-bold text-slate-950 mb-4 tracking-tight group-hover:text-emerald-700 transition-colors">
                   {faq.q}
                 </h3>
-                <p className="text-slate-500 text-[15px] leading-relaxed font-medium max-w-lg">
+                <p className="text-slate-500 text-[15px] leading-relaxed font-normal max-w-lg">
                   {faq.a}
                 </p>
               </div>
@@ -298,7 +299,7 @@ export default function HomePage() {
             <h2 className="text-4xl sm:text-6xl font-display font-bold text-white tracking-tighter leading-none">
               Bulk supply tailored for your needs.
             </h2>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-medium">
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
               Wholesale pricing and dedicated supply chains for corporate
               clients and distribution.
             </p>
@@ -307,7 +308,7 @@ export default function HomePage() {
                 href="/bulk-orders"
                 className="inline-flex bg-white text-slate-950 hover:bg-emerald-500 hover:text-white px-10 py-4 rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg"
               >
-                Request Quote
+                Request Bulk Quote
               </Link>
             </div>
           </div>

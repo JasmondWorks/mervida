@@ -79,10 +79,13 @@ model BlogPost {
 }
 
 model Settings {
-  id                      String @id @default("default")
-  whatsappNumber          String @default("")
-  whatsappMessageTemplate String @default("")
-  businessName            String @default("")
-  businessEmail           String @default("")
+  id                      String   @id @default("default")
+  whatsappNumber          String   @default("")
+  whatsappMessageTemplate String   @default("")
+  businessName            String   @default("")
+  businessEmail           String   @default("")
   carouselImages          String[] @default([])
+  blogTitle               String   @default("The Blog")
+  blogDescription         String   @default("Notes on clean food processing, natural ingredients, and the everyday habits that keep a household healthy — straight from our production floor.")
+  blogPlaceholderText     String   @default("Mervida Blog")
 }

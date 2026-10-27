@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { fetchSettings, updateSettings } from "@/app/lib/api-client";
 import { uploadFile, UPLOAD_FOLDERS } from "@/app/lib/upload-client";
+import { Button, Field, H1, H4 } from "@/app/components/ui";
 import type { AdminSettings } from "@/app/lib/types";
 
 export default function SettingsPage() {
@@ -71,30 +72,22 @@ export default function SettingsPage() {
     }
   }
 
-  const inp =
-    "w-full bg-white border border-slate-200 rounded-lg px-6 py-3.5 text-sm font-normal focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-300";
-  const lbl = "text-caption text-slate-400 block mb-2 ml-5";
-
   return (
     <form
       onSubmit={handleSave}
-      className="p-10 max-w-4xl mx-auto space-y-10 pb-32 animate-in fade-in duration-700"
+      className="p-6 sm:p-10 max-w-4xl mx-auto space-y-10 pb-32 animate-in fade-in duration-700"
     >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-8">
         <div className="space-y-2">
-          <h1 className="text-slate-950 tracking-tighter leading-none">Settings</h1>
+          <H1 className="text-slate-950 tracking-tighter leading-none">Settings</H1>
           <p className="text-slate-400 font-normal text-xs">
             Business details, WhatsApp number, and homepage carousel
           </p>
         </div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="text-caption px-8 py-3 bg-slate-900 text-white rounded-lg hover:bg-emerald-600 transition-all active:scale-95 disabled:opacity-50"
-        >
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
+        <Button type="submit" loading={saving}>
+          Save Changes
+        </Button>
       </div>
 
       {saved && (
@@ -110,57 +103,72 @@ export default function SettingsPage() {
 
       {/* Business Identity */}
       <section className="bg-slate-50 rounded-5xl p-8 space-y-6 border border-slate-100/50">
-        <h4 className="text-slate-900 px-4">Core Identity</h4>
+        <H4 className="text-slate-900 px-4">Core Identity</H4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Business Name</label>
-            <input
-              value={settings.businessName}
-              onChange={(e) => patch("businessName", e.target.value)}
-              className={inp}
-              placeholder="Business Name"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>Administrative Email</label>
-            <input
-              type="email"
-              value={settings.businessEmail}
-              onChange={(e) => patch("businessEmail", e.target.value)}
-              className={inp}
-              placeholder="contact@domain.com"
-            />
-          </div>
+          <Field
+            label="Business Name"
+            value={settings.businessName}
+            onValueChange={(v) => patch("businessName", v)}
+            placeholder="Business Name"
+          />
+          <Field
+            label="Administrative Email"
+            type="email"
+            value={settings.businessEmail}
+            onValueChange={(v) => patch("businessEmail", v)}
+            placeholder="contact@domain.com"
+          />
         </div>
       </section>
 
       {/* WhatsApp */}
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
-        <h4 className="text-slate-900 px-4">WhatsApp</h4>
+        <H4 className="text-slate-900 px-4">WhatsApp</H4>
         <div className="space-y-6 px-4">
-          <div className="space-y-1.5">
-            <label className={lbl}>Recipient Number</label>
-            <input
-              value={settings.whatsappNumber}
-              onChange={(e) => patch("whatsappNumber", e.target.value)}
-              className={inp}
-              placeholder="234... (leave blank to use the WHATSAPP_NUMBER env var)"
-            />
-            <p className="text-xs font-normal text-slate-400 tracking-tight mt-2 ml-5">
-              International format, no leading &quot;+&quot;. Overrides the WHATSAPP_NUMBER env var when set.
-            </p>
-          </div>
-          <div className="space-y-1.5">
-            <label className={lbl}>Order Message Template</label>
-            <textarea
-              value={settings.whatsappMessageTemplate}
-              onChange={(e) => patch("whatsappMessageTemplate", e.target.value)}
-              className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-6 py-5 text-xs font-normal font-mono focus:outline-none focus:border-emerald-500 transition-all resize-none h-40"
-            />
-            <p className="text-[11px] font-normal text-slate-400 tracking-tight mt-2 ml-5">
-              Variables enabled: {"{items}"}, {"{total}"}
-            </p>
-          </div>
+          <Field
+            label="Recipient Number"
+            value={settings.whatsappNumber}
+            onValueChange={(v) => patch("whatsappNumber", v)}
+            placeholder="234... (leave blank to use the WHATSAPP_NUMBER env var)"
+            hint='International format, no leading "+". Overrides the WHATSAPP_NUMBER env var when set.'
+          />
+          <Field
+            label="Order Message Template"
+            type="textarea"
+            value={settings.whatsappMessageTemplate}
+            onValueChange={(v) => patch("whatsappMessageTemplate", v)}
+            className="font-mono h-40"
+            hint="Variables enabled: {items}, {total}"
+          />
+        </div>
+      </section>
+
+      {/* Blog */}
+      <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
+        <H4 className="text-slate-900 px-4">Blog</H4>
+        <div className="space-y-6 px-4">
+          <Field
+            label="Page Title"
+            value={settings.blogTitle}
+            onValueChange={(v) => patch("blogTitle", v)}
+            placeholder="The Blog"
+            hint="Shown as the heading at the top of /blog."
+          />
+          <Field
+            label="Page Description"
+            type="textarea"
+            value={settings.blogDescription}
+            onValueChange={(v) => patch("blogDescription", v)}
+            className="h-24"
+            hint="The intro text shown beneath the title."
+          />
+          <Field
+            label="Cover Placeholder Text"
+            value={settings.blogPlaceholderText}
+            onValueChange={(v) => patch("blogPlaceholderText", v)}
+            placeholder="Mervida Blog"
+            hint="Shown on a post's thumbnail when it has no cover image."
+          />
         </div>
       </section>
 
@@ -168,20 +176,20 @@ export default function SettingsPage() {
       <section className="bg-white rounded-5xl p-8 space-y-6 border border-slate-100 shadow-2xl shadow-slate-900/1">
         <div className="flex items-center justify-between px-4">
           <div>
-            <h4 className="text-slate-900 mb-1">Homepage Carousel</h4>
+            <H4 className="text-slate-900 mb-1">Homepage Carousel</H4>
             <p className="text-xs text-slate-400 font-normal">
               Upload and sequence the images shown on the landing page.
             </p>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => imageInputRef.current?.click()}
-            disabled={uploading}
-            className="text-caption px-4 py-2 border border-slate-200 text-slate-500 rounded-lg hover:text-emerald-600 hover:border-emerald-200 transition-all disabled:opacity-50 shrink-0"
-            style={{ fontSize: "9px" }}
+            loading={uploading}
+            className="shrink-0"
           >
             {uploading ? "Uploading..." : "+ Upload Image"}
-          </button>
+          </Button>
           <input
             ref={imageInputRef}
             type="file"
@@ -249,13 +257,9 @@ export default function SettingsPage() {
 
       {/* Bottom Save */}
       <div className="flex justify-end pt-8 border-t border-slate-100">
-        <button
-          type="submit"
-          disabled={saving}
-          className="text-caption px-8 py-3 bg-slate-900 text-white rounded-lg transition-all hover:bg-emerald-600 active:scale-95 shadow-xl shadow-black/5 disabled:opacity-50"
-        >
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
+        <Button type="submit" loading={saving} className="shadow-xl shadow-black/5">
+          Save Changes
+        </Button>
       </div>
     </form>
   );

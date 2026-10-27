@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdminRequest } from "@/app/lib/require-admin";
 import { scheduleCloudinaryCleanup } from "@/app/lib/media-cleanup";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 
 async function getOrCreateSettings() {
   return prisma.settings.upsert({
@@ -13,7 +13,7 @@ async function getOrCreateSettings() {
 
 export async function GET() {
   const settings = await getOrCreateSettings();
-  return NextResponse.json({
+  return apiSuccess({
     ...settings,
     // DB value wins if an admin has overridden it; otherwise fall back to
     // the env var so WhatsApp works out of the box with no manual setup.
@@ -23,7 +23,7 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const body = await request.json();
   const before = await getOrCreateSettings();
@@ -36,11 +36,15 @@ export async function PUT(request: Request) {
       businessName: body.businessName ?? "",
       businessEmail: body.businessEmail ?? "",
       carouselImages: body.carouselImages ?? [],
+      // Blog hero copy is customer-facing — never let it be saved blank.
+      blogTitle: body.blogTitle?.trim() || "The Blog",
+      blogDescription: body.blogDescription?.trim() || before.blogDescription,
+      blogPlaceholderText: body.blogPlaceholderText?.trim() || "Mervida Blog",
     },
   });
 
   const removed = before.carouselImages.filter((img) => !settings.carouselImages.includes(img));
   await scheduleCloudinaryCleanup(removed);
 
-  return NextResponse.json(settings);
+  return apiSuccess(settings, { message: "Settings saved successfully." });
 }

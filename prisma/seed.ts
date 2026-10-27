@@ -16,10 +16,10 @@ const categories = [
       "Pure cold-pressed cooking oils, gluten-free flours, and natural baking fats",
   },
   {
-    slug: "food-chemicals",
+    slug: "natural-extracts",
     name: "Natural Food Colorants",
     description:
-      "Natural plant color oils, pure carrot extracts, and clean food-making additives",
+      "Natural plant color oils, pure carrot extracts, and clean botanical ingredients",
   },
 ];
 
@@ -221,7 +221,7 @@ const products = [
   {
     name: "Natural Carrot Color Oil (Beta-Carotene)",
     slug: "food-grade-carrot-extract-oil",
-    categorySlug: "food-chemicals",
+    categorySlug: "natural-extracts",
     shortDescription:
       "Pure carrot oil rich in natural Beta-Carotene. Gives foods a rich, natural yellow-orange color.",
     fullDescription:

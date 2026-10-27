@@ -80,6 +80,9 @@ export interface AdminSettings {
   businessName: string;
   businessEmail: string;
   carouselImages: string[];
+  blogTitle: string;
+  blogDescription: string;
+  blogPlaceholderText: string;
 }
 
 export interface CartItem {

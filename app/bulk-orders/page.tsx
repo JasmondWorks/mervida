@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { fetchSettings } from "@/app/lib/api-client";
+import { Button, Field } from "@/app/components/ui";
 
 const BENEFITS = [
   {
@@ -55,45 +57,42 @@ export default function BulkOrdersPage() {
     window.open(url, "_blank", "noopener,noreferrer");
   }
 
-  const inputCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300";
-
   return (
     <main className="bg-white min-h-screen">
       {/* Hero - Engaging Mesh & Pattern */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-24 px-6 text-center rounded-b-6xl overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-400 mb-4 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
             Strategic Partnerships
           </p>
-          <h1 className="text-5xl sm:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
-            Bulk Orders.
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+            Bulk Orders
           </h1>
-          <p className="text-white/70 text-base sm:text-xl max-w-xl mx-auto leading-relaxed font-medium">
+          <p className="text-white/80 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal">
             Wholesale pricing, custom packaging, and dedicated supply for
             restaurants, distributors, and global businesses.
           </p>
         </div>
 
         {/* Decorative background element */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-display font-bold text-white/5 pointer-events-none select-none tracking-tighter italic z-0">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-extrabold text-white/5 pointer-events-none select-none tracking-tighter italic z-0">
           B2B
         </div>
       </section>
 
-      {/* Benefits - Shadowless, Rounded, Professional */}
-      <section className="max-w-6xl mx-auto px-6 py-24 sm:py-32">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-          <div className="space-y-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600">
-              The Mervida Advantage
+      {/* Benefits */}
+      <section className="max-w-6xl mx-auto px-6 py-20 sm:py-28">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-700">
+              Clean-Label Sourcing
             </p>
-            <h2 className="text-4xl font-display font-bold tracking-tighter text-slate-950 uppercase leading-none">
-              Why Partner With Us
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+              Why partner with us
             </h2>
           </div>
-          <p className="text-slate-400 font-medium text-[11px] uppercase tracking-widest max-w-[240px] md:text-right">
-            Optimized supply chains for high-volume stakeholders.
+          <p className="text-sm font-normal text-slate-500 max-w-sm md:text-right leading-relaxed">
+            Optimized supply chains and pure natural ingredients for commercial kitchens, retailers, and food manufacturers.
           </p>
         </div>
 
@@ -101,15 +100,15 @@ export default function BulkOrdersPage() {
           {BENEFITS.map((b) => (
             <div
               key={b.title}
-              className="bg-slate-50 border border-slate-100 rounded-5xl p-10 group hover:bg-slate-950 transition-all duration-500"
+              className="bg-slate-50 border border-slate-100 rounded-5xl p-8 sm:p-10 group hover:bg-slate-950 transition-all duration-500"
             >
-              <p className="text-5xl font-display font-bold text-emerald-500/20 mb-8 transition-colors group-hover:text-emerald-500">
+              <p className="text-4xl font-extrabold text-emerald-500/30 mb-6 transition-colors group-hover:text-emerald-400">
                 {b.stat}
               </p>
-              <h3 className="text-xl font-display font-bold text-slate-950 mb-4 tracking-tight uppercase group-hover:text-white transition-colors">
+              <h3 className="text-base font-semibold text-slate-950 mb-2 tracking-tight group-hover:text-white transition-colors">
                 {b.title}
               </h3>
-              <p className="text-slate-500 font-medium leading-relaxed text-lg group-hover:text-slate-400 transition-colors">
+              <p className="text-slate-500 font-normal leading-relaxed text-sm group-hover:text-slate-300 transition-colors">
                 {b.description}
               </p>
             </div>
@@ -117,16 +116,16 @@ export default function BulkOrdersPage() {
         </div>
 
         <div className="mt-8">
-          <div className="bg-white border-2 border-slate-50 rounded-5xl p-12 flex flex-col items-center text-center max-w-lg mx-auto hover:border-emerald-500/20 transition-all duration-500">
-            <p className="text-5xl font-display font-bold text-emerald-500 mb-6 drop-shadow-sm">
-              Any
+          <div className="bg-white border-2 border-slate-50 rounded-5xl p-8 sm:p-10 flex flex-col items-center text-center max-w-lg mx-auto hover:border-emerald-500/20 transition-all duration-500">
+            <p className="text-4xl font-extrabold text-emerald-600 mb-4">
+              Any Scale
             </p>
-            <h3 className="text-xl font-display font-bold text-slate-950 mb-4 tracking-tight uppercase">
+            <h3 className="text-base font-semibold text-slate-950 mb-2 tracking-tight">
               Flexible Quantities
             </h3>
-            <p className="text-slate-500 font-medium leading-relaxed text-lg italic">
-              From restaurant-size to full distribution quantities. We
-              accommodate all scales.
+            <p className="text-slate-500 font-normal leading-relaxed text-sm">
+              From restaurant-size portions to full commercial distribution quantities. We
+              accommodate all scales with consistent purity.
             </p>
           </div>
         </div>
@@ -134,157 +133,124 @@ export default function BulkOrdersPage() {
 
       {/* Inquiry form */}
       <section className="pb-20 px-6">
-        <div className="bg-white rounded-3xl p-8 shadow-lg max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-lg max-w-2xl mx-auto border border-slate-100">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-950 mb-1.5 tracking-tight">
             Submit a Bulk Inquiry
           </h2>
-          <p className="text-gray-500 text-sm mb-8">
+          <p className="text-slate-500 font-normal text-sm mb-8">
             Complete the form and we will respond via WhatsApp with pricing and
-            details.
+            specifications.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                  Business name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  className={inputCls}
-                  placeholder="Your business name"
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                  Contact name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={contactName}
-                  onChange={(e) => setContactName(e.target.value)}
-                  className={inputCls}
-                  placeholder="Your full name"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                Phone number
-              </label>
-              <input
-                type="tel"
+              <Field
+                label="Business name"
                 required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className={inputCls}
-                placeholder="+234..."
+                value={businessName}
+                onValueChange={setBusinessName}
+                placeholder="Your business name"
               />
-            </div>
-
-            <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                Product(s) interested in
-              </label>
-              <input
-                type="text"
+              <Field
+                label="Contact name"
                 required
-                value={products}
-                onChange={(e) => setProducts(e.target.value)}
-                className={inputCls}
-                placeholder="e.g. Red Palm Oil, Virgin Coconut Oil, Carrot Extract Oil"
+                value={contactName}
+                onValueChange={setContactName}
+                placeholder="Your full name"
               />
             </div>
 
-            <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                Estimated quantity
-              </label>
-              <input
-                type="text"
-                required
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                className={inputCls}
-                placeholder="e.g. 100kg"
-              />
-            </div>
+            <Field
+              label="Phone number"
+              type="tel"
+              required
+              value={phone}
+              onValueChange={setPhone}
+              placeholder="+234..."
+            />
 
-            <div>
-              <label className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-5">
-                Additional message (optional)
-              </label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-3xl px-6 py-4 text-sm outline-none transition-all placeholder:text-slate-300 resize-none"
-                placeholder="Any specific requirements, delivery location, timeline, etc."
-              />
-            </div>
+            <Field
+              label="Product(s) interested in"
+              required
+              value={products}
+              onValueChange={setProducts}
+              placeholder="e.g. Red Palm Oil, Virgin Coconut Oil, Natural Extracts"
+            />
 
-            <button
+            <Field
+              label="Estimated quantity"
+              required
+              value={quantity}
+              onValueChange={setQuantity}
+              placeholder="e.g. 100kg"
+            />
+
+            <Field
+              label="Additional message (optional)"
+              type="textarea"
+              rows={4}
+              value={message}
+              onValueChange={setMessage}
+              placeholder="Any specific requirements, delivery location, timeline, etc."
+            />
+
+            <Button
               type="submit"
               disabled={!whatsappNumber}
-              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-semibold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-black/5 ${
-                !whatsappNumber ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className="w-full"
             >
               {whatsappNumber
-                ? "Send Partnership Request"
+                ? "Request Bulk Quote on WhatsApp"
                 : "WhatsApp not configured"}
-            </button>
+            </Button>
           </form>
         </div>
       </section>
 
-      {/* Distribution Platform Banner */}
-      <section className="pb-20 px-6">
-        <div className="max-w-2xl mx-auto">
-          <a
-            href="https://distribute.mervida.com/register"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block bg-slate-950 rounded-3xl p-8 sm:p-10 text-center group hover:bg-emerald-900 transition-all duration-500 relative overflow-hidden"
-          >
+      {/* Wholesale & Custom Catalog Section */}
+      <section className="pb-24 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-slate-950 rounded-5xl p-8 sm:p-12 text-center relative overflow-hidden border border-slate-900">
             <div className="relative z-10">
-              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-400 mb-3">
-                Mervida Distribution
+              <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-400 mb-3">
+                Commercial & Wholesale
               </p>
-              <h3 className="text-xl sm:text-2xl font-display font-bold text-white tracking-tight mb-3">
-                Looking for our full product range?
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mb-3">
+                Looking for our full catalog or custom specifications?
               </h3>
-              <p className="text-white/50 text-sm font-medium mb-6 max-w-md mx-auto">
-                Whether you&apos;re a consumer, retailer, or business — explore
-                our distribution platform for product catalogues, pricing, and
-                delivery across Nigeria.
+              <p className="text-slate-300 text-sm font-normal mb-8 max-w-lg mx-auto leading-relaxed">
+                Whether you are stocking retail shelves, sourcing for a commercial kitchen, or formulating clean-label foods — we supply cold-pressed oils, unrefined flours, and natural extracts in tailored commercial volumes.
               </p>
-              <span className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest border border-white/10 group-hover:bg-white group-hover:text-emerald-900 transition-all">
-                Visit Mervida Distribute
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Button
+                  onClick={() => {
+                    if (whatsappNumber) {
+                      const text = "Hello GFO Foods! I would like to inquire about wholesale catalog pricing and custom bulk specifications.";
+                      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+                      window.open(url, "_blank", "noopener,noreferrer");
+                    }
+                  }}
+                  disabled={!whatsappNumber}
+                  variant="primary"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                  />
-                </svg>
-              </span>
+                  <svg
+                    className="w-4 h-4 mr-1.5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.584 1.777.818 2.796.818 3.181 0 5.767-2.586 5.767-5.768.001-3.182-2.585-5.768-5.767-5.768zm3.385 8.165c-.141.396-.714.733-1.018.775-.291.042-.647.065-2.023-.509-1.637-.681-2.684-2.348-2.766-2.457-.08-.109-.652-.868-.652-1.652 0-.784.41-1.17.556-1.328.147-.159.32-.198.427-.198.106 0 .213.002.307.006.1.005.234-.038.366.279.136.327.466 1.135.507 1.218.041.083.069.181.014.289-.055.109-.082.176-.164.272-.082.096-.172.215-.246.289-.082.082-.168.172-.072.336.095.165.424.7 1.002 1.215.744.663 1.371.868 1.564.965.193.096.307.083.42-.048.114-.131.488-.567.619-.76.13-.194.261-.161.439-.096.178.066 1.13.533 1.324.63.194.098.324.146.371.228.047.082.047.476-.094.872z" />
+                  </svg>
+                  Chat with Sales on WhatsApp
+                </Button>
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center h-12 px-5 rounded-lg text-sm font-semibold text-white/90 bg-white/10 hover:bg-white/20 transition-all border border-white/10"
+                >
+                  Browse Retail Catalog
+                </Link>
+              </div>
             </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-display font-bold text-white/[0.03] pointer-events-none select-none tracking-tighter italic">
-              B2B
-            </div>
-          </a>
+          </div>
         </div>
       </section>
     </main>

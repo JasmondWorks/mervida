@@ -7,6 +7,7 @@ import {
   saveDiasporaRequest,
 } from "@/app/lib/personal-shopping-store";
 import type { DiasporaRequest } from "@/app/lib/personal-shopping-types";
+import { Button, Field } from "@/app/components/ui";
 
 const COUNTRIES = [
   "🇬🇧 United Kingdom",
@@ -51,11 +52,11 @@ const PRODUCT_CATEGORIES = [
     ],
   },
   {
-    title: "Food Chemicals & Additives",
+    title: "Natural Extracts & Colorants",
     items: [
-      "Food-Grade Carrot Extract Oil (Beta-Carotene)",
-      "Natural Colorants & Preservative Extracts",
-      "Formulation Ingredients",
+      "Cold-Extracted Carrot Oil (Beta-Carotene)",
+      "Natural Plant Food Colorants",
+      "Herbal & Flavor Extracts",
     ],
   },
 ];
@@ -178,13 +179,6 @@ export default function DiasporaShoppingPage() {
     }
   }
 
-  const inputCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300";
-  const selectCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-3.5 text-sm outline-none transition-all text-slate-700 appearance-none";
-  const labelCls =
-    "block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-1";
-
   return (
     <main className="bg-white min-h-screen">
       {/* Hero */}
@@ -243,14 +237,14 @@ export default function DiasporaShoppingPage() {
                 key={cat.title}
                 className="bg-white border border-slate-100 rounded-[2rem] p-8"
               >
-                <h3 className="text-lg font-display font-bold text-slate-950 mb-4 tracking-tight">
+                <h3 className="text-xl font-display font-bold text-slate-950 mb-4 tracking-tight">
                   {cat.title}
                 </h3>
                 <ul className="space-y-2">
                   {cat.items.map((item) => (
                     <li
                       key={item}
-                      className="text-slate-500 text-sm font-medium flex items-start gap-2"
+                      className="text-slate-600 text-sm font-normal flex items-start gap-2"
                     >
                       <span className="text-emerald-500 mt-0.5">•</span>
                       {item}
@@ -274,7 +268,7 @@ export default function DiasporaShoppingPage() {
         </div>
       </section>
 
-      {/* Shipping Countries */}
+      {/* Shipping Countries — temporarily commented out per user request
       <section className="max-w-6xl mx-auto px-6 py-24 sm:py-32">
         <div className="text-center mb-16">
           <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-4">
@@ -311,6 +305,7 @@ export default function DiasporaShoppingPage() {
           </p>
         </div>
       </section>
+      */}
 
       {/* Request Form */}
       <section
@@ -318,11 +313,11 @@ export default function DiasporaShoppingPage() {
         className="bg-slate-50 border-y border-slate-100 py-24 sm:py-32 px-6"
       >
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-4">
+          <div className="text-center mb-10">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-3">
               Build Your Diaspora Hamper
             </p>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tighter text-slate-950 leading-none">
+            <h2 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-slate-950 leading-tight">
               Tell Us What You&apos;re Craving
             </h2>
           </div>
@@ -359,125 +354,84 @@ export default function DiasporaShoppingPage() {
               className="bg-white border border-slate-100 rounded-[2rem] p-8 sm:p-12 space-y-6"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className={labelCls}>Your Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className={inputCls}
-                    placeholder="Full name"
-                  />
-                </div>
-                <div>
-                  <label className={labelCls}>Your Email *</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={inputCls}
-                    placeholder="email@example.com"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className={labelCls}>WhatsApp Number *</label>
-                  <input
-                    type="tel"
-                    required
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    className={inputCls}
-                    placeholder="+44 7..."
-                  />
-                </div>
-                <div>
-                  <label className={labelCls}>Delivery Country *</label>
-                  <select
-                    required
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    className={selectCls}
-                  >
-                    <option value="">Select country</option>
-                    {COUNTRIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className={labelCls}>Delivery Address</label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className={inputCls}
-                  placeholder="Full address including postcode/zip"
-                />
-              </div>
-
-              <div>
-                <label className={labelCls}>Your Shopping List *</label>
-                <textarea
+                <Field
+                  label="Your Full Name"
                   required
-                  value={shoppingList}
-                  onChange={(e) => setShoppingList(e.target.value)}
-                  rows={5}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-4 text-sm outline-none transition-all placeholder:text-slate-300 resize-none"
-                  placeholder="List everything you need, with quantities where possible. E.g.: 2kg smoked catfish, 5 litres palm oil, 1kg egusi (ground), 500g crayfish..."
+                  value={fullName}
+                  onValueChange={setFullName}
+                  placeholder="Full name"
+                />
+                <Field
+                  label="Your Email"
+                  type="email"
+                  required
+                  value={email}
+                  onValueChange={setEmail}
+                  placeholder="email@example.com"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className={labelCls}>Occasion / Context</label>
-                  <select
-                    value={occasion}
-                    onChange={(e) => setOccasion(e.target.value)}
-                    className={selectCls}
-                  >
-                    <option value="">Select (optional)</option>
-                    {OCCASIONS.map((o) => (
-                      <option key={o} value={o}>
-                        {o}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className={labelCls}>Specific Meal</label>
-                  <input
-                    type="text"
-                    value={specificMeal}
-                    onChange={(e) => setSpecificMeal(e.target.value)}
-                    className={inputCls}
-                    placeholder="e.g. Ofe Onugbu with Semovita"
-                  />
-                </div>
+                <Field
+                  label="WhatsApp Number"
+                  type="tel"
+                  required
+                  value={whatsapp}
+                  onValueChange={setWhatsapp}
+                  placeholder="+44 7..."
+                />
+                <Field
+                  label="Delivery Country"
+                  type="select"
+                  required
+                  value={country}
+                  onValueChange={setCountry}
+                  placeholder="Select country"
+                  options={COUNTRIES.map((c) => ({ label: c, value: c }))}
+                />
               </div>
 
-              <div>
-                <label className={labelCls}>Urgency</label>
-                <select
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value)}
-                  className={selectCls}
-                >
-                  {URGENCY_OPTIONS.map((u) => (
-                    <option key={u} value={u}>
-                      {u}
-                    </option>
-                  ))}
-                </select>
+              <Field
+                label="Delivery Address"
+                value={address}
+                onValueChange={setAddress}
+                placeholder="Full address including postcode/zip"
+              />
+
+              <Field
+                label="Your Shopping List"
+                type="textarea"
+                required
+                rows={5}
+                value={shoppingList}
+                onValueChange={setShoppingList}
+                placeholder="List everything you need, with quantities where possible. E.g.: 2kg smoked catfish, 5 litres palm oil, 1kg egusi (ground), 500g crayfish..."
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <Field
+                  label="Occasion / Context"
+                  type="select"
+                  value={occasion}
+                  onValueChange={setOccasion}
+                  placeholder="Select (optional)"
+                  options={OCCASIONS.map((o) => ({ label: o, value: o }))}
+                />
+                <Field
+                  label="Specific Meal"
+                  value={specificMeal}
+                  onValueChange={setSpecificMeal}
+                  placeholder="e.g. Ofe Onugbu with Semovita"
+                />
               </div>
+
+              <Field
+                label="Urgency"
+                type="select"
+                value={urgency}
+                onValueChange={setUrgency}
+                options={URGENCY_OPTIONS.map((u) => ({ label: u, value: u }))}
+              />
 
               {/* Gift Section */}
               <div className="border-t border-slate-100 pt-6">
@@ -488,7 +442,7 @@ export default function DiasporaShoppingPage() {
                     onChange={(e) => setIsGift(e.target.checked)}
                     className="w-5 h-5 rounded-md border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <span className="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">
+                  <span className="text-sm font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors">
                     🎁 This is a gift — I&apos;m sending a taste of home to
                     someone
                   </span>
@@ -497,58 +451,46 @@ export default function DiasporaShoppingPage() {
                 {isGift && (
                   <div className="mt-6 space-y-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className={labelCls}>Recipient Name</label>
-                        <input
-                          type="text"
-                          value={recipientName}
-                          onChange={(e) => setRecipientName(e.target.value)}
-                          className={inputCls}
-                          placeholder="Who is this for?"
-                        />
-                      </div>
-                      <div>
-                        <label className={labelCls}>Recipient Address</label>
-                        <input
-                          type="text"
-                          value={recipientAddress}
-                          onChange={(e) => setRecipientAddress(e.target.value)}
-                          className={inputCls}
-                          placeholder="Their delivery address"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className={labelCls}>Gift Message</label>
-                      <textarea
-                        value={giftMessage}
-                        onChange={(e) => setGiftMessage(e.target.value)}
-                        rows={3}
-                        className="w-full bg-white border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-4 text-sm outline-none transition-all placeholder:text-slate-300 resize-none"
-                        placeholder="We'll print this on a card and include it in the package"
+                      <Field
+                        label="Recipient Name"
+                        value={recipientName}
+                        onValueChange={setRecipientName}
+                        placeholder="Who is this for?"
+                      />
+                      <Field
+                        label="Recipient Address"
+                        value={recipientAddress}
+                        onValueChange={setRecipientAddress}
+                        placeholder="Their delivery address"
                       />
                     </div>
+                    <Field
+                      label="Gift Message"
+                      type="textarea"
+                      rows={3}
+                      value={giftMessage}
+                      onValueChange={setGiftMessage}
+                      placeholder="We'll print this on a card and include it in the package"
+                    />
                   </div>
                 )}
               </div>
 
-              <div>
-                <label className={labelCls}>Additional Notes</label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={3}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-4 text-sm outline-none transition-all placeholder:text-slate-300 resize-none"
-                  placeholder="Special requests, brand preferences, allergies..."
-                />
-              </div>
+              <Field
+                label="Additional Notes"
+                type="textarea"
+                rows={3}
+                value={notes}
+                onValueChange={setNotes}
+                placeholder="Special requests, brand preferences, allergies..."
+              />
 
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
+                className="w-full"
               >
-                Submit My Request
-              </button>
+                Submit Request & Chat on WhatsApp
+              </Button>
             </form>
           )}
         </div>

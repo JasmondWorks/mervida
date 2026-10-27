@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdminRequest } from "@/app/lib/require-admin";
 import { scheduleCloudinaryCleanup } from "@/app/lib/media-cleanup";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
   const body = await request.json();
@@ -14,11 +14,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     where: { slug: body.slug, NOT: { id } },
   });
   if (duplicate) {
-    return NextResponse.json({ error: "Slug already in use." }, { status: 409 });
+    return apiError("Slug already in use.", 409);
   }
 
   const before = await prisma.category.findUnique({ where: { id } });
-  if (!before) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!before) return apiError("Category not found.", 404);
 
   const category = await prisma.category.update({
     where: { id },
@@ -34,26 +34,26 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await scheduleCloudinaryCleanup([before.image]);
   }
 
-  return NextResponse.json(category);
+  return apiSuccess(category, { message: "Category updated successfully." });
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
 
   const inUse = await prisma.product.count({ where: { categoryId: id } });
   if (inUse > 0) {
-    return NextResponse.json(
-      { error: `Cannot delete — ${inUse} product(s) still use this category.` },
-      { status: 409 },
+    return apiError(
+      `Cannot delete — ${inUse} product(s) still use this category.`,
+      409
     );
   }
 
   const category = await prisma.category.delete({ where: { id } }).catch(() => null);
-  if (!category) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!category) return apiError("Category not found.", 404);
 
   await scheduleCloudinaryCleanup([category.image]);
-  return NextResponse.json({ ok: true });
+  return apiSuccess({ id }, { message: "Category deleted successfully." });
 }

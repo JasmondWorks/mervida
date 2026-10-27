@@ -9,8 +9,8 @@ export async function uploadFile(file: File, folder: UploadFolder): Promise<stri
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ folder }),
   });
-  if (!signRes.ok) throw new Error("Could not start upload.");
-  const { timestamp, signature, apiKey, cloudName } = await signRes.json();
+  const json = await signRes.json();
+  const { timestamp, signature, apiKey, cloudName } = json.data ?? json;
 
   const resourceType = file.type.startsWith("video/") ? "video" : "image";
   const body = new FormData();

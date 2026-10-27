@@ -1,21 +1,69 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdminRequest } from "@/app/lib/require-admin";
+import {
+  apiSuccess,
+  apiError,
+  parsePaginationParams,
+  buildPagination,
+} from "@/app/lib/api-response";
 
-export async function GET() {
-  const products = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
-  return NextResponse.json(products);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const isAll = searchParams.get("all") === "true";
+  const categoryId = searchParams.get("category");
+  const search = searchParams.get("search")?.trim();
+
+  const where: any = {};
+  if (categoryId) {
+    where.categoryId = categoryId;
+  }
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { slug: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  const totalCount = await prisma.product.count({ where });
+
+  if (isAll) {
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+    return apiSuccess(products, {
+      pagination: {
+        page: 1,
+        totalPages: 1,
+        totalCount,
+        hasPrevious: false,
+        hasNext: false,
+      },
+    });
+  }
+
+  const { page, limit, skip } = parsePaginationParams(searchParams, 10);
+  const products = await prisma.product.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return apiSuccess(products, {
+    pagination: buildPagination(totalCount, page, limit),
+  });
 }
 
 export async function POST(request: Request) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
 
   const body = await request.json();
   const existing = await prisma.product.findUnique({ where: { slug: body.slug } });
   if (existing) {
-    return NextResponse.json({ error: "Slug already in use." }, { status: 409 });
+    return apiError("Slug already in use.", 409);
   }
 
   const product = await prisma.product.create({
@@ -42,5 +90,9 @@ export async function POST(request: Request) {
       seoDescription: body.seoDescription || body.shortDescription,
     },
   });
-  return NextResponse.json(product, { status: 201 });
+
+  return apiSuccess(product, {
+    status: 201,
+    message: "Product created successfully.",
+  });
 }

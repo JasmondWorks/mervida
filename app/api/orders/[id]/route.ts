@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { isAdminRequest } from "@/app/lib/require-admin";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
   const body = await request.json();
@@ -23,16 +23,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     })
     .catch(() => null);
 
-  if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(order);
+  if (!order) return apiError("Order not found.", 404);
+  return apiSuccess(order, { message: "Order updated successfully." });
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!(await isAdminRequest())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
   const { id } = await params;
   const order = await prisma.order.delete({ where: { id } }).catch(() => null);
-  if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ ok: true });
+  if (!order) return apiError("Order not found.", 404);
+  return apiSuccess({ id }, { message: "Order deleted successfully." });
 }

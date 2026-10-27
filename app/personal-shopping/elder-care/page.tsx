@@ -7,6 +7,7 @@ import {
   saveElderCareRegistration,
 } from "@/app/lib/personal-shopping-store";
 import type { ElderCareRegistration } from "@/app/lib/personal-shopping-types";
+import { Button, Field, Label } from "@/app/components/ui";
 
 const SERVICE_ICONS = {
   cart: "M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 1.994-4.705 2.602-7.189.114-.47-.251-.961-.735-.961H5.106M7.5 14.25L5.106 5.272M7.5 14.25l-1.323 2.145c-.35.567.055 1.302.72 1.302h11.925a2.25 2.25 0 100-4.5H7.5z",
@@ -182,18 +183,21 @@ export default function ElderCareShoppingPage() {
     setSubmitted(true);
 
     if (whatsappNumber) {
-      const text = `Hello Mervida! 👋 I just registered for Elder Care Shopping. I'm ${guardianName} and I'd like to set up shopping for ${elderlyName}. Looking forward to hearing from you!`;
+      const scheduleDetails = [
+        `Guardian: ${guardianName}${relationship ? ` (${relationship})` : ""}`,
+        `Elderly Recipient: ${elderlyName}`,
+        elderlyAddress ? `Delivery Address: ${elderlyAddress}` : null,
+        `Frequency: ${frequency}${selectedDays.length > 0 ? ` (${selectedDays.join(", ")})` : ""}`,
+        deliveryTime ? `Preferred Window: ${deliveryTime}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const text = `Hello Mervida! 👋 I've just registered for Elder Care Shopping.\n\n${scheduleDetails}\n\nI'd like to finalize details and start our schedule.`;
       const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
       window.open(url, "_blank", "noopener,noreferrer");
     }
   }
-
-  const inputCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300";
-  const selectCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-3.5 text-sm outline-none transition-all text-slate-700 appearance-none";
-  const labelCls =
-    "block text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-2 ml-1";
 
   return (
     <main className="bg-white min-h-screen">
@@ -359,11 +363,11 @@ export default function ElderCareShoppingPage() {
         className="bg-slate-50 border-y border-slate-100 py-24 sm:py-32 px-6"
       >
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-4">
+          <div className="text-center mb-10">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-3">
               Get Started
             </p>
-            <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tighter text-slate-950 leading-none">
+            <h2 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-slate-950 leading-tight">
               Set Up Elder Care Shopping
             </h2>
           </div>
@@ -400,7 +404,7 @@ export default function ElderCareShoppingPage() {
             >
               {/* Guardian Info */}
               <div>
-                <h3 className="text-lg font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
+                <h3 className="text-base font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
                   <span className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-xs font-bold">
                     1
                   </span>
@@ -408,66 +412,47 @@ export default function ElderCareShoppingPage() {
                 </h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>Your Name *</label>
-                      <input
-                        type="text"
-                        required
-                        value={guardianName}
-                        onChange={(e) => setGuardianName(e.target.value)}
-                        className={inputCls}
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div>
-                      <label className={labelCls}>Relationship *</label>
-                      <select
-                        required
-                        value={relationship}
-                        onChange={(e) => setRelationship(e.target.value)}
-                        className={selectCls}
-                      >
-                        <option value="">Select relationship</option>
-                        {RELATIONSHIPS.map((r) => (
-                          <option key={r} value={r}>
-                            {r}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <Field
+                      label="Your Name"
+                      required
+                      value={guardianName}
+                      onValueChange={setGuardianName}
+                      placeholder="Your full name"
+                    />
+                    <Field
+                      label="Relationship"
+                      type="select"
+                      required
+                      value={relationship}
+                      onValueChange={setRelationship}
+                      placeholder="Select relationship"
+                      options={RELATIONSHIPS.map((r) => ({ label: r, value: r }))}
+                    />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>
-                        Your Phone / WhatsApp *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={guardianPhone}
-                        onChange={(e) => setGuardianPhone(e.target.value)}
-                        className={inputCls}
-                        placeholder="+234..."
-                      />
-                    </div>
-                    <div>
-                      <label className={labelCls}>Your Email *</label>
-                      <input
-                        type="email"
-                        required
-                        value={guardianEmail}
-                        onChange={(e) => setGuardianEmail(e.target.value)}
-                        className={inputCls}
-                        placeholder="email@example.com"
-                      />
-                    </div>
+                    <Field
+                      label="Your Phone / WhatsApp"
+                      type="tel"
+                      required
+                      value={guardianPhone}
+                      onValueChange={setGuardianPhone}
+                      placeholder="+234..."
+                    />
+                    <Field
+                      label="Your Email"
+                      type="email"
+                      required
+                      value={guardianEmail}
+                      onValueChange={setGuardianEmail}
+                      placeholder="email@example.com"
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Elderly Person Info */}
               <div className="border-t border-slate-100 pt-8">
-                <h3 className="text-lg font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
+                <h3 className="text-base font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
                   <span className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-xs font-bold">
                     2
                   </span>
@@ -475,74 +460,50 @@ export default function ElderCareShoppingPage() {
                 </h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>Their Full Name *</label>
-                      <input
-                        type="text"
-                        required
-                        value={elderlyName}
-                        onChange={(e) => setElderlyName(e.target.value)}
-                        className={inputCls}
-                        placeholder="Full name"
-                      />
-                    </div>
-                    <div>
-                      <label className={labelCls}>Their Phone Number</label>
-                      <input
-                        type="tel"
-                        value={elderlyPhone}
-                        onChange={(e) => setElderlyPhone(e.target.value)}
-                        className={inputCls}
-                        placeholder="If they have one"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className={labelCls}>Their Delivery Address *</label>
-                    <input
-                      type="text"
+                    <Field
+                      label="Their Full Name"
                       required
-                      value={elderlyAddress}
-                      onChange={(e) => setElderlyAddress(e.target.value)}
-                      className={inputCls}
-                      placeholder="Full address"
+                      value={elderlyName}
+                      onValueChange={setElderlyName}
+                      placeholder="Full name"
+                    />
+                    <Field
+                      label="Their Phone Number"
+                      type="tel"
+                      value={elderlyPhone}
+                      onValueChange={setElderlyPhone}
+                      placeholder="If they have one"
                     />
                   </div>
+                  <Field
+                    label="Their Delivery Address"
+                    required
+                    value={elderlyAddress}
+                    onValueChange={setElderlyAddress}
+                    placeholder="Full address"
+                  />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>Age Range</label>
-                      <select
-                        value={ageRange}
-                        onChange={(e) => setAgeRange(e.target.value)}
-                        className={selectCls}
-                      >
-                        <option value="">Select age range</option>
-                        {AGE_RANGES.map((a) => (
-                          <option key={a} value={a}>
-                            {a}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className={labelCls}>
-                        Mobility / Special Notes
-                      </label>
-                      <input
-                        type="text"
-                        value={mobilityNotes}
-                        onChange={(e) => setMobilityNotes(e.target.value)}
-                        className={inputCls}
-                        placeholder='e.g. "Uses a walking frame"'
-                      />
-                    </div>
+                    <Field
+                      label="Age Range"
+                      type="select"
+                      value={ageRange}
+                      onValueChange={setAgeRange}
+                      placeholder="Select age range"
+                      options={AGE_RANGES.map((a) => ({ label: a, value: a }))}
+                    />
+                    <Field
+                      label="Mobility / Special Notes"
+                      value={mobilityNotes}
+                      onValueChange={setMobilityNotes}
+                      placeholder='e.g. "Uses a walking frame"'
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Preferences */}
               <div className="border-t border-slate-100 pt-8">
-                <h3 className="text-lg font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
+                <h3 className="text-base font-display font-bold text-slate-950 mb-6 tracking-tight flex items-center gap-2">
                   <span className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-xs font-bold">
                     3
                   </span>
@@ -550,50 +511,32 @@ export default function ElderCareShoppingPage() {
                 </h3>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelCls}>Shopping Frequency</label>
-                      <select
-                        value={frequency}
-                        onChange={(e) => setFrequency(e.target.value)}
-                        className={selectCls}
-                      >
-                        {FREQUENCIES.map((f) => (
-                          <option key={f} value={f}>
-                            {f}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className={labelCls}>
-                        Preferred Delivery Time
-                      </label>
-                      <select
-                        value={deliveryTime}
-                        onChange={(e) => setDeliveryTime(e.target.value)}
-                        className={selectCls}
-                      >
-                        <option value="">Select time window</option>
-                        {DELIVERY_TIMES.map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <Field
+                      label="Shopping Frequency"
+                      type="select"
+                      value={frequency}
+                      onValueChange={setFrequency}
+                      options={FREQUENCIES.map((f) => ({ label: f, value: f }))}
+                    />
+                    <Field
+                      label="Preferred Delivery Time"
+                      type="select"
+                      value={deliveryTime}
+                      onValueChange={setDeliveryTime}
+                      placeholder="Select time window"
+                      options={DELIVERY_TIMES.map((t) => ({ label: t, value: t }))}
+                    />
                   </div>
 
                   <div>
-                    <label className={labelCls}>
-                      Preferred Delivery Day(s)
-                    </label>
+                    <Label>Preferred Delivery Day(s)</Label>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {DELIVERY_DAYS.map((day) => (
                         <button
                           key={day}
                           type="button"
                           onClick={() => toggleDay(day)}
-                          className={`px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-widest border transition-all ${
+                          className={`px-5 py-2.5 rounded-lg text-caption border transition-all ${
                             selectedDays.includes(day)
                               ? "bg-emerald-600 text-white border-emerald-600"
                               : "bg-slate-50 text-slate-500 border-slate-200 hover:border-emerald-500"
@@ -606,9 +549,7 @@ export default function ElderCareShoppingPage() {
                   </div>
 
                   <div>
-                    <label className={labelCls}>
-                      Who Should We Contact for Payment?
-                    </label>
+                    <Label>Who Should We Contact for Payment?</Label>
                     <div className="flex gap-4 mt-1">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -618,7 +559,7 @@ export default function ElderCareShoppingPage() {
                           onChange={() => setPaymentContact("elderly")}
                           className="text-emerald-600 focus:ring-emerald-500"
                         />
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-normal text-slate-700">
                           The elderly person (cash on delivery)
                         </span>
                       </label>
@@ -630,32 +571,30 @@ export default function ElderCareShoppingPage() {
                           onChange={() => setPaymentContact("family")}
                           className="text-emerald-600 focus:ring-emerald-500"
                         />
-                        <span className="text-sm font-medium text-slate-700">
+                        <span className="text-sm font-normal text-slate-700">
                           Family member (remote payment)
                         </span>
                       </label>
                     </div>
                   </div>
 
-                  <div>
-                    <label className={labelCls}>Additional Notes</label>
-                    <textarea
-                      value={additionalNotes}
-                      onChange={(e) => setAdditionalNotes(e.target.value)}
-                      rows={3}
-                      className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-6 py-4 text-sm outline-none transition-all placeholder:text-slate-300 resize-none"
-                      placeholder="Any other information we should know..."
-                    />
-                  </div>
+                  <Field
+                    label="Additional Notes"
+                    type="textarea"
+                    rows={3}
+                    value={additionalNotes}
+                    onValueChange={setAdditionalNotes}
+                    placeholder="Any other information we should know..."
+                  />
                 </div>
               </div>
 
-              <button
+              <Button
                 type="submit"
-                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
+                className="w-full"
               >
-                Register for Elder Care Shopping
-              </button>
+                Register & Chat on WhatsApp
+              </Button>
             </form>
           )}
         </div>

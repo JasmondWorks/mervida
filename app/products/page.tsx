@@ -2,9 +2,10 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { fetchProducts, fetchCategories } from "@/app/lib/api-client";
+import { fetchProducts, fetchCategories, type Pagination } from "@/app/lib/api-client";
 import type { Product, Category } from "@/app/lib/types";
 import ProductCard from "@/app/components/ProductCard";
+import { Button } from "@/app/components/ui";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -13,13 +14,15 @@ function ProductsContent() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+
+  const pageParam = parseInt(searchParams.get("page") || "1", 10);
+  const page = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
+  const categoryQuery = searchParams.get("category") || "all";
 
   useEffect(() => {
-    fetchProducts().then(setProducts);
-    fetchCategories().then(setCategories);
+    fetchCategories({ all: true }).then((res) => setCategories(res.data ?? []));
   }, []);
-
-  const categoryQuery = searchParams.get("category") || "all";
 
   // Match category by ID or slug
   const activeCategoryObj = categories.find(
@@ -32,6 +35,23 @@ function ProductsContent() {
     ? "all"
     : categoryQuery;
 
+  useEffect(() => {
+    let cancelled = false;
+    fetchProducts({
+      page,
+      limit: 12,
+      category: activeCategoryId !== "all" ? activeCategoryId : undefined,
+    }).then((res) => {
+      if (!cancelled) {
+        setProducts(res.data ?? []);
+        setPagination(res.pagination);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [page, activeCategoryId]);
+
   const handleSelectCategory = (catId: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (catId === "all") {
@@ -39,16 +59,25 @@ function ProductsContent() {
     } else {
       params.set("category", catId);
     }
+    params.delete("page");
     const queryString = params.toString();
     router.push(queryString ? `${pathname}?${queryString}` : pathname, {
       scroll: false,
     });
   };
 
-  const filtered = products.filter((p) => {
-    if (activeCategoryId === "all") return true;
-    return p.categoryId === activeCategoryId;
-  });
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (newPage <= 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(newPage));
+    }
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: true,
+    });
+  };
 
   return (
     <main className="bg-white min-h-screen pt-32 pb-24 max-w-[1440px] mx-auto animate-in fade-in duration-1000">
@@ -70,7 +99,8 @@ function ProductsContent() {
           <p className="text-slate-500 font-medium text-lg max-w-sm leading-relaxed">
             Browse our curated selection of{" "}
             <span className="text-slate-950 font-bold">
-              {filtered.length} natural products
+              {pagination?.totalCount ?? products.length}{" "}
+              {(pagination?.totalCount ?? products.length) === 1 ? "natural product" : "natural products"}
             </span>{" "}
             sourced with integrity.
           </p>
@@ -111,14 +141,40 @@ function ProductsContent() {
 
       {/* Products grid - Consistent gap, rounded style */}
       <div className="px-6 sm:px-12 py-12 sm:py-20">
-        {filtered.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+        {products.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              {products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 pt-12 border-t border-slate-100 mt-12">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={!pagination.hasPrevious}
+                  onClick={() => handlePageChange(page - 1)}
+                >
+                  Previous
+                </Button>
+                <span className="text-xs font-semibold text-slate-500 px-3">
+                  Page {pagination.page} of {pagination.totalPages}
+                </span>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={!pagination.hasNext}
+                  onClick={() => handlePageChange(page + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="text-center py-32 bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+          <div className="text-center py-32 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-6 border border-slate-100">
               <svg
                 className="w-5 h-5 text-slate-200"
@@ -134,15 +190,15 @@ function ProductsContent() {
                 />
               </svg>
             </div>
-            <p className="text-slate-400 text-sm font-medium mb-8">
+            <p className="text-slate-400 text-sm font-normal mb-6">
               No products found in this category.
             </p>
-            <button
+            <Button
+              variant="secondary"
               onClick={() => handleSelectCategory("all")}
-              className="text-[11px] font-semibold tracking-widest uppercase text-slate-950 border-b border-emerald-500 pb-1 hover:text-emerald-700 transition-colors"
             >
-              View all items
-            </button>
+              View all products
+            </Button>
           </div>
         )}
       </div>

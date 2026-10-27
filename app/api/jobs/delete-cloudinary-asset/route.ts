@@ -1,16 +1,16 @@
-import { NextResponse } from "next/server";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import { deleteFromCloudinary } from "@/app/lib/cloudinary";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 
 async function handler(request: Request) {
   const { publicId, resourceType } = await request.json();
 
   if (typeof publicId !== "string") {
-    return NextResponse.json({ error: "Missing publicId." }, { status: 400 });
+    return apiError("Missing publicId.", 400);
   }
 
   await deleteFromCloudinary(publicId, resourceType === "video" ? "video" : "image");
-  return NextResponse.json({ ok: true });
+  return apiSuccess({ ok: true });
 }
 
 // verifySignatureAppRouter reads QSTASH_CURRENT_SIGNING_KEY/QSTASH_NEXT_SIGNING_KEY
@@ -22,7 +22,4 @@ const hasQstashKeys =
 export const POST = hasQstashKeys
   ? verifySignatureAppRouter(handler)
   : async () =>
-      NextResponse.json(
-        { error: "QStash signing keys are not configured yet." },
-        { status: 503 },
-      );
+      apiError("QStash signing keys are not configured yet.", 503);

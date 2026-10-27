@@ -16,9 +16,9 @@ const SLIDES = [
     sub: "Unrefined lipid purity for artisanal baking, pastry crafting, and healthy nutrition.",
   },
   {
-    label: "Food Chemicals",
+    label: "Natural Extracts",
     title: "Food-Grade Carrot\nExtract Oil",
-    sub: "Concentrated Beta-Carotene lipid extract for natural food coloring and formulation chemistry.",
+    sub: "Cold-extracted, beta-carotene rich oil for natural food coloring, artisanal baking, and skincare.",
   },
 ];
 

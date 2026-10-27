@@ -15,6 +15,8 @@ import type {
   ElderCareRegistration,
   ElderCareStatus,
 } from "@/app/lib/personal-shopping-types";
+import { ConfirmDialog, Tabs, H1, Text } from "@/app/components/ui";
+import { Table, type TableColumn } from "@/app/components/table";
 
 const DIASPORA_STATUSES: DiasporaRequestStatus[] = [
   "new",
@@ -57,6 +59,9 @@ export default function AdminPersonalShoppingPage() {
     useState<DiasporaRequest | null>(null);
   const [selectedRegistration, setSelectedRegistration] =
     useState<ElderCareRegistration | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<
+    { kind: "diaspora"; id: string } | { kind: "elder"; id: string } | null
+  >(null);
 
   useEffect(() => {
     initPersonalShoppingStore();
@@ -75,13 +80,6 @@ export default function AdminPersonalShoppingPage() {
     reload();
   }
 
-  function handleDeleteDiaspora(id: string) {
-    if (!confirm("Delete this request?")) return;
-    deleteDiasporaRequest(id);
-    setSelectedRequest(null);
-    reload();
-  }
-
   function updateElderStatus(id: string, status: ElderCareStatus) {
     const reg = elderRegistrations.find((r) => r.id === id);
     if (!reg) return;
@@ -89,10 +87,16 @@ export default function AdminPersonalShoppingPage() {
     reload();
   }
 
-  function handleDeleteElder(id: string) {
-    if (!confirm("Delete this registration?")) return;
-    deleteElderCareRegistration(id);
-    setSelectedRegistration(null);
+  function confirmPendingDelete() {
+    if (!pendingDelete) return;
+    if (pendingDelete.kind === "diaspora") {
+      deleteDiasporaRequest(pendingDelete.id);
+      setSelectedRequest(null);
+    } else {
+      deleteElderCareRegistration(pendingDelete.id);
+      setSelectedRegistration(null);
+    }
+    setPendingDelete(null);
     reload();
   }
 
@@ -100,54 +104,26 @@ export default function AdminPersonalShoppingPage() {
     <div className="p-8 sm:p-12 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="mb-10 space-y-2">
-        <h1 className="text-3xl font-display font-bold tracking-tighter text-slate-950">
-          Personal Shopping
-        </h1>
-        <p className="text-slate-400 font-medium text-xs">
+        <H1 className="text-3xl tracking-tighter text-slate-950">Personal Shopping</H1>
+        <Text size="xs" tone="subtle">
           Diaspora requests and elder care registrations
-        </p>
+        </Text>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-8">
-        <button
-          onClick={() => {
-            setTab("diaspora");
+      <div className="mb-8">
+        <Tabs
+          items={[
+            { label: "Diaspora Requests", value: "diaspora", count: diasporaRequests.length },
+            { label: "Elder Care Registrations", value: "elder", count: elderRegistrations.length },
+          ]}
+          value={tab}
+          onChange={(v) => {
+            setTab(v as "diaspora" | "elder");
             setSelectedRequest(null);
             setSelectedRegistration(null);
           }}
-          className={`px-6 py-3 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all ${
-            tab === "diaspora"
-              ? "bg-slate-900 text-white"
-              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-          }`}
-        >
-          Diaspora Requests
-          {diasporaRequests.length > 0 && (
-            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-lg text-[9px]">
-              {diasporaRequests.length}
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => {
-            setTab("elder");
-            setSelectedRequest(null);
-            setSelectedRegistration(null);
-          }}
-          className={`px-6 py-3 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all ${
-            tab === "elder"
-              ? "bg-slate-900 text-white"
-              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-          }`}
-        >
-          Elder Care Registrations
-          {elderRegistrations.length > 0 && (
-            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-lg text-[9px]">
-              {elderRegistrations.length}
-            </span>
-          )}
-        </button>
+        />
       </div>
 
       {/* Diaspora Tab */}
@@ -197,7 +173,7 @@ export default function AdminPersonalShoppingPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleDeleteDiaspora(selectedRequest.id)}
+                    onClick={() => setPendingDelete({ kind: "diaspora", id: selectedRequest.id })}
                     className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
                   >
                     Delete
@@ -280,99 +256,58 @@ export default function AdminPersonalShoppingPage() {
             </div>
           ) : (
             <>
-              {diasporaRequests.length === 0 ? (
-                <div className="bg-slate-50 border border-slate-100 rounded-3xl p-16 text-center">
-                  <p className="text-slate-400 font-bold text-sm">
-                    No diaspora requests yet.
-                  </p>
-                  <p className="text-slate-300 text-xs mt-2">
-                    Requests submitted from the diaspora shopping page will
-                    appear here.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-white border border-slate-100 rounded-3xl overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-slate-100">
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Date
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Name
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Country
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Shopping List
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Urgency
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Status
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {diasporaRequests.map((req) => (
-                          <tr
-                            key={req.id}
-                            className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-slate-500 text-xs whitespace-nowrap">
-                              {new Date(req.createdAt).toLocaleDateString()}
-                            </td>
-                            <td className="px-6 py-4 font-bold text-slate-900 text-xs">
-                              {req.fullName}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs">
-                              {req.deliveryCountry}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs max-w-[200px] truncate">
-                              {req.shoppingList}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs">
-                              {req.urgency}
-                            </td>
-                            <td className="px-6 py-4">
-                              <select
-                                value={req.status}
-                                onChange={(e) =>
-                                  updateDiasporaStatus(
-                                    req.id,
-                                    e.target.value as DiasporaRequestStatus,
-                                  )
-                                }
-                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border outline-none ${statusColor(req.status)}`}
-                              >
-                                {DIASPORA_STATUSES.map((s) => (
-                                  <option key={s} value={s}>
-                                    {s.charAt(0).toUpperCase() + s.slice(1)}
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                            <td className="px-6 py-4">
-                              <button
-                                onClick={() => setSelectedRequest(req)}
-                                className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 hover:text-emerald-800 transition-colors"
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+              <Table
+                data={diasporaRequests}
+                emptyMessage="No diaspora requests yet."
+                columns={
+                  [
+                    {
+                      key: "createdAt",
+                      label: "Date",
+                      className: "text-xs font-normal text-slate-500 whitespace-nowrap",
+                      render: (req) => new Date(req.createdAt).toLocaleDateString(),
+                    },
+                    {
+                      key: "fullName",
+                      label: "Name",
+                      className: "text-xs font-semibold text-slate-900",
+                    },
+                    {
+                      key: "deliveryCountry",
+                      label: "Country",
+                      className: "text-xs font-normal text-slate-500",
+                    },
+                    {
+                      key: "shoppingList",
+                      label: "Shopping List",
+                      className: "text-xs font-normal text-slate-500 max-w-50 truncate",
+                    },
+                    {
+                      key: "urgency",
+                      label: "Urgency",
+                      className: "text-xs font-normal text-slate-500",
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (req) => (
+                        <select
+                          value={req.status}
+                          onChange={(e) => updateDiasporaStatus(req.id, e.target.value as DiasporaRequestStatus)}
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold border outline-none ${statusColor(req.status)}`}
+                        >
+                          {DIASPORA_STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                              {s.charAt(0).toUpperCase() + s.slice(1)}
+                            </option>
+                          ))}
+                        </select>
+                      ),
+                    },
+                  ] as TableColumn<DiasporaRequest>[]
+                }
+                actions={[{ label: "View", onClick: setSelectedRequest, className: "text-emerald-600" }]}
+              />
             </>
           )}
         </div>
@@ -425,7 +360,7 @@ export default function AdminPersonalShoppingPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleDeleteElder(selectedRegistration.id)}
+                    onClick={() => setPendingDelete({ kind: "elder", id: selectedRegistration.id })}
                     className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
                   >
                     Delete
@@ -525,103 +460,71 @@ export default function AdminPersonalShoppingPage() {
             </div>
           ) : (
             <>
-              {elderRegistrations.length === 0 ? (
-                <div className="bg-slate-50 border border-slate-100 rounded-3xl p-16 text-center">
-                  <p className="text-slate-400 font-bold text-sm">
-                    No elder care registrations yet.
-                  </p>
-                  <p className="text-slate-300 text-xs mt-2">
-                    Registrations from the elder care shopping page will appear
-                    here.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-white border border-slate-100 rounded-3xl overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-slate-100">
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Date
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Elderly Person
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Guardian
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Address
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Frequency
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Status
-                          </th>
-                          <th className="text-left px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {elderRegistrations.map((reg) => (
-                          <tr
-                            key={reg.id}
-                            className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-slate-500 text-xs whitespace-nowrap">
-                              {new Date(reg.createdAt).toLocaleDateString()}
-                            </td>
-                            <td className="px-6 py-4 font-bold text-slate-900 text-xs">
-                              {reg.elderlyName}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs">
-                              {reg.guardianName}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs max-w-[200px] truncate">
-                              {reg.elderlyAddress}
-                            </td>
-                            <td className="px-6 py-4 text-slate-500 text-xs">
-                              {reg.shoppingFrequency}
-                            </td>
-                            <td className="px-6 py-4">
-                              <select
-                                value={reg.status}
-                                onChange={(e) =>
-                                  updateElderStatus(
-                                    reg.id,
-                                    e.target.value as ElderCareStatus,
-                                  )
-                                }
-                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border outline-none ${statusColor(reg.status)}`}
-                              >
-                                {ELDER_STATUSES.map((s) => (
-                                  <option key={s} value={s}>
-                                    {s.charAt(0).toUpperCase() + s.slice(1)}
-                                  </option>
-                                ))}
-                              </select>
-                            </td>
-                            <td className="px-6 py-4">
-                              <button
-                                onClick={() => setSelectedRegistration(reg)}
-                                className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 hover:text-emerald-800 transition-colors"
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+              <Table
+                data={elderRegistrations}
+                emptyMessage="No elder care registrations yet."
+                columns={
+                  [
+                    {
+                      key: "createdAt",
+                      label: "Date",
+                      className: "text-xs font-normal text-slate-500 whitespace-nowrap",
+                      render: (reg) => new Date(reg.createdAt).toLocaleDateString(),
+                    },
+                    {
+                      key: "elderlyName",
+                      label: "Elderly Person",
+                      className: "text-xs font-semibold text-slate-900",
+                    },
+                    {
+                      key: "guardianName",
+                      label: "Guardian",
+                      className: "text-xs font-normal text-slate-500",
+                    },
+                    {
+                      key: "elderlyAddress",
+                      label: "Address",
+                      className: "text-xs font-normal text-slate-500 max-w-50 truncate",
+                    },
+                    {
+                      key: "shoppingFrequency",
+                      label: "Frequency",
+                      className: "text-xs font-normal text-slate-500",
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (reg) => (
+                        <select
+                          value={reg.status}
+                          onChange={(e) => updateElderStatus(reg.id, e.target.value as ElderCareStatus)}
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold border outline-none ${statusColor(reg.status)}`}
+                        >
+                          {ELDER_STATUSES.map((s) => (
+                            <option key={s} value={s}>
+                              {s.charAt(0).toUpperCase() + s.slice(1)}
+                            </option>
+                          ))}
+                        </select>
+                      ),
+                    },
+                  ] as TableColumn<ElderCareRegistration>[]
+                }
+                actions={[{ label: "View", onClick: setSelectedRegistration, className: "text-emerald-600" }]}
+              />
             </>
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={confirmPendingDelete}
+        title={pendingDelete?.kind === "diaspora" ? "Delete request?" : "Delete registration?"}
+        message="This record will be permanently removed. This can't be undone."
+        confirmLabel="Delete"
+      />
     </div>
   );
 }
