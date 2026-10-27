@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
 import { fetchSettings } from "@/app/lib/api-client";
+import {
+  DEFAULT_ORDER_MESSAGE_TEMPLATE,
+  renderOrderMessageTemplate,
+} from "@/app/lib/orderMessage";
 
 export default function CartDrawer() {
   const {
@@ -22,8 +26,7 @@ export default function CartDrawer() {
     fetchSettings().then((s) => {
       setWhatsappNumber(s.whatsappNumber ?? "");
       setMessageTemplate(
-        s.whatsappMessageTemplate ||
-          "Hello Mervida! I would like to order:\n\n{items}\n\nEstimated Subtotal: ₦{total}\nDelivery Location (City / State): [Please enter your area]\n\nKindly confirm availability and total with delivery. Thank you!",
+        s.whatsappMessageTemplate || DEFAULT_ORDER_MESSAGE_TEMPLATE,
       );
     });
   }, []);
@@ -35,9 +38,11 @@ export default function CartDrawer() {
           `\u2022 ${i.productName}${i.variantLabel ? ` (${i.variantLabel})` : ""} \u00d7 ${i.quantity} \u2014 \u20a6${(i.price * i.quantity).toLocaleString()}`,
       )
       .join("\n");
-    const message = messageTemplate
-      .replace("{items}", itemsText)
-      .replace("{total}", totalPrice.toLocaleString());
+    const message = renderOrderMessageTemplate(
+      messageTemplate,
+      itemsText,
+      totalPrice.toLocaleString(),
+    );
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   }
 

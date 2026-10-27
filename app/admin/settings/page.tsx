@@ -5,6 +5,12 @@ import { fetchSettings, updateSettings } from "@/app/lib/api-client";
 import { uploadFile, UPLOAD_FOLDERS } from "@/app/lib/upload-client";
 import { Button, Field, H1, H4 } from "@/app/components/ui";
 import type { AdminSettings } from "@/app/lib/types";
+import {
+  ORDER_MESSAGE_VARIABLES,
+  ORDER_MESSAGE_SAMPLE_ITEMS_TEXT,
+  ORDER_MESSAGE_SAMPLE_TOTAL,
+  renderOrderMessageTemplate,
+} from "@/app/lib/orderMessage";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<AdminSettings | null>(null);
@@ -13,6 +19,7 @@ export default function SettingsPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const templateRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     fetchSettings().then(setSettings);
@@ -25,6 +32,24 @@ export default function SettingsPage() {
     value: AdminSettings[K],
   ) {
     setSettings((s) => (s ? { ...s, [key]: value } : s));
+  }
+
+  function insertTemplateVariable(token: string) {
+    const el = templateRef.current;
+    const current = settings!.whatsappMessageTemplate ?? "";
+    if (!el) {
+      patch("whatsappMessageTemplate", current + token);
+      return;
+    }
+    const start = el.selectionStart ?? current.length;
+    const end = el.selectionEnd ?? current.length;
+    const next = current.slice(0, start) + token + current.slice(end);
+    patch("whatsappMessageTemplate", next);
+    requestAnimationFrame(() => {
+      el.focus();
+      const caret = start + token.length;
+      el.setSelectionRange(caret, caret);
+    });
   }
 
   function removeCarouselImage(src: string) {
@@ -132,14 +157,58 @@ export default function SettingsPage() {
             placeholder="234... (leave blank to use the WHATSAPP_NUMBER env var)"
             hint='International format, no leading "+". Overrides the WHATSAPP_NUMBER env var when set.'
           />
-          <Field
-            label="Order Message Template"
-            type="textarea"
-            value={settings.whatsappMessageTemplate}
-            onValueChange={(v) => patch("whatsappMessageTemplate", v)}
-            className="font-mono h-40"
-            hint="Variables enabled: {items}, {total}"
-          />
+          <div className="space-y-1.5">
+            <label className="text-caption text-slate-600 block mb-1.5">
+              Order Message Template
+            </label>
+
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs text-slate-400">Insert:</span>
+              {ORDER_MESSAGE_VARIABLES.map((v) => (
+                <button
+                  key={v.token}
+                  type="button"
+                  onClick={() => insertTemplateVariable(v.token)}
+                  className="text-xs font-mono px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                >
+                  {v.token}
+                </button>
+              ))}
+            </div>
+
+            <textarea
+              ref={templateRef}
+              value={settings.whatsappMessageTemplate}
+              onChange={(e) =>
+                patch("whatsappMessageTemplate", e.target.value)
+              }
+              rows={6}
+              className="w-full bg-white border border-slate-200 rounded-lg px-6 py-3.5 text-sm font-mono resize-none focus:outline-none focus:border-emerald-500 transition-all"
+            />
+
+            <ul className="text-xs text-slate-400 ml-5 space-y-0.5">
+              {ORDER_MESSAGE_VARIABLES.map((v) => (
+                <li key={v.token}>
+                  <code className="font-mono text-slate-500">{v.token}</code>
+                  {" — "}
+                  {v.description}
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-3">
+              <span className="text-xs text-slate-400 block mb-1.5 ml-5">
+                Preview (sample data)
+              </span>
+              <div className="bg-[#e5fbe5] rounded-lg p-4 text-sm whitespace-pre-wrap font-mono text-slate-800 border border-emerald-100">
+                {renderOrderMessageTemplate(
+                  settings.whatsappMessageTemplate,
+                  ORDER_MESSAGE_SAMPLE_ITEMS_TEXT,
+                  ORDER_MESSAGE_SAMPLE_TOTAL,
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
