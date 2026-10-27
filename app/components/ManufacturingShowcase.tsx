@@ -17,7 +17,7 @@ export default function ManufacturingShowcase({
 }: Props) {
   const [selectedVideo, setSelectedVideo] = useState<ProcessVideo | null>(null);
 
-  const videoProducts = products.filter((p) => p.processVideo);
+  const videoProducts = products.filter((p) => p.processVideo?.videoUrl);
 
   return (
     <section className="py-16 sm:py-24 px-6 sm:px-12 max-w-[1440px] mx-auto">
@@ -28,7 +28,7 @@ export default function ManufacturingShowcase({
 
         {/* Section Header */}
         <div className="max-w-2xl mb-12 sm:mb-16 relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em]">
             <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4 6.75C4 5.231 5.231 4 6.75 4h10.5C18.769 4 20 5.231 20 6.75v10.5c0 1.519-1.231 2.75-2.75 2.75H6.75C5.231 20 4 18.769 4 17.25V6.75zm6 3.75v3rem4-1.5-4-1.5z" />
             </svg>
@@ -85,13 +85,13 @@ export default function ManufacturingShowcase({
 
                   {/* Duration Badge */}
                   {video.duration && (
-                    <span className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-[10px] font-mono font-semibold text-slate-300">
+                    <span className="absolute bottom-3 right-3 px-2.5 py-1 rounded-lg bg-slate-950/80 backdrop-blur-md border border-white/10 text-[10px] font-mono font-semibold text-slate-300">
                       {video.duration}
                     </span>
                   )}
 
                   {/* Category Tag */}
-                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-bold uppercase tracking-widest text-emerald-400">
+                  <span className="absolute top-3 left-3 px-3 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-bold uppercase tracking-widest text-emerald-400">
                     {p.name}
                   </span>
                 </div>
@@ -107,9 +107,12 @@ export default function ManufacturingShowcase({
                       {video.highlights.slice(0, 2).map((h, i) => (
                         <span
                           key={i}
-                          className="px-2.5 py-1 rounded-full bg-white/5 text-[10px] font-medium text-slate-300 border border-white/5"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 text-[10px] font-medium text-slate-300 border border-white/5"
                         >
-                          ✓ {h}
+                          <svg className="w-3 h-3 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg>
+                          {h}
                         </span>
                       ))}
                     </div>

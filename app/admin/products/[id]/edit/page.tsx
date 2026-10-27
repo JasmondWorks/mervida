@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getProduct } from '@/app/lib/store';
+import { fetchProduct } from '@/app/lib/api-client';
 import type { Product } from '@/app/lib/types';
 import ProductForm from '@/app/components/admin/ProductForm';
 
@@ -12,9 +12,9 @@ export default function EditProductPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const p = getProduct(id);
-    if (p) setProduct(p);
-    else setNotFound(true);
+    fetchProduct(id)
+      .then(setProduct)
+      .catch(() => setNotFound(true));
   }, [id]);
 
   if (notFound) {

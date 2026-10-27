@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { initStore, getSettings } from "@/app/lib/store";
 import { generateId } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 import {
   initPersonalShoppingStore,
   saveDiasporaRequest,
@@ -139,10 +139,8 @@ export default function DiasporaShoppingPage() {
   const [giftMessage, setGiftMessage] = useState("");
 
   useEffect(() => {
-    initStore();
     initPersonalShoppingStore();
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
+    fetchSettings().then((s) => setWhatsappNumber(s.whatsappNumber ?? ""));
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -192,7 +190,7 @@ export default function DiasporaShoppingPage() {
       {/* Hero */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-28 px-6 text-center rounded-b-[4rem] overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000 max-w-3xl mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
             Diaspora Shopping
           </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
@@ -214,7 +212,7 @@ export default function DiasporaShoppingPage() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-600 mb-6">
             Our Story
           </p>
-          <blockquote className="text-slate-700 text-lg sm:text-xl leading-relaxed font-medium italic border-l-4 border-emerald-500/30 pl-6">
+          <blockquote className="text-slate-700 text-lg sm:text-xl leading-relaxed font-medium italic border-l border-emerald-500/60 pl-6">
             For Africans in the diaspora, food is more than nutrition —
             it&apos;s a thread back to everything familiar. The smell of palm
             oil hitting a hot pan. The texture of egusi stirred to just the
@@ -264,7 +262,7 @@ export default function DiasporaShoppingPage() {
           </div>
 
           <div className="text-center mt-8">
-            <div className="inline-block bg-white border border-slate-200 rounded-full px-8 py-4">
+            <div className="inline-block bg-white border border-slate-200 rounded-lg px-8 py-4">
               <p className="text-slate-500 font-bold text-sm">
                 Don&apos;t see your item?{" "}
                 <span className="text-emerald-600">
@@ -547,7 +545,7 @@ export default function DiasporaShoppingPage() {
 
               <button
                 type="submit"
-                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
+                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
               >
                 Submit My Request
               </button>
@@ -591,7 +589,7 @@ export default function DiasporaShoppingPage() {
               </p>
               <a
                 href="#request-form"
-                className="inline-flex items-center gap-2 bg-slate-950 text-white px-6 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 bg-slate-950 text-white px-6 py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95"
               >
                 Customise & Order
               </a>

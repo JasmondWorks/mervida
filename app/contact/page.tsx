@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initStore, getSettings } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 
 export default function ContactPage() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -10,10 +10,10 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    initStore();
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
-    setBusinessEmail(s.businessEmail ?? "");
+    fetchSettings().then((s) => {
+      setWhatsappNumber(s.whatsappNumber ?? "");
+      setBusinessEmail(s.businessEmail ?? "");
+    });
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -146,7 +146,7 @@ export default function ContactPage() {
               href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-slate-950 hover:bg-emerald-600 text-white w-full text-center py-5 rounded-full font-bold text-[11px] uppercase tracking-widest mt-12 block transition-all active:scale-95 shadow-xl shadow-slate-950/5"
+              className="bg-slate-950 hover:bg-emerald-600 text-white w-full text-center py-5 rounded-lg font-bold text-[11px] uppercase tracking-widest mt-12 block transition-all active:scale-95 shadow-xl shadow-slate-950/5"
             >
               Start Instant Conversation
             </a>
@@ -175,7 +175,7 @@ export default function ContactPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-full px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
                 placeholder="Full Name"
               />
             </div>
@@ -191,7 +191,7 @@ export default function ContactPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-full px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300"
                 placeholder="email@example.com"
               />
             </div>
@@ -215,7 +215,7 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={!whatsappNumber}
-              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/5 ${
+              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/5 ${
                 !whatsappNumber ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >

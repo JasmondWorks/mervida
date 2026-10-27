@@ -77,7 +77,6 @@ export interface Order {
 export interface AdminSettings {
   whatsappNumber: string;
   whatsappMessageTemplate: string;
-  adminPassword: string;
   businessName: string;
   businessEmail: string;
   carouselImages: string[];

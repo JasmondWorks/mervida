@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getProducts, getCategories, deleteProduct } from "@/app/lib/store";
+import { fetchProducts, fetchCategories, deleteProductApi } from "@/app/lib/api-client";
 import type { Product, Category } from "@/app/lib/types";
 
 export default function ProductsPage() {
@@ -13,14 +13,14 @@ export default function ProductsPage() {
   const [filterStock, setFilterStock] = useState("");
 
   useEffect(() => {
-    setProducts(getProducts());
-    setCategories(getCategories());
+    fetchProducts().then(setProducts);
+    fetchCategories().then(setCategories);
   }, []);
 
-  function handleDelete(id: string, name: string) {
+  async function handleDelete(id: string, name: string) {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-    deleteProduct(id);
-    setProducts(getProducts());
+    setProducts((prev) => prev.filter((p) => p.id !== id)); // instant UI update
+    await deleteProductApi(id);
   }
 
   const filtered = products.filter((p) => {
@@ -45,23 +45,19 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-8">
         <div className="space-y-2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600">
-            Inventory Management
-          </p>
           <h1 className="text-3xl font-display font-bold tracking-tighter text-slate-950 leading-none">
-            Products Collection
+            Products
           </h1>
           <p className="text-slate-400 font-medium text-xs">
-            Manage{" "}
             <span className="text-slate-900 font-bold">{filtered.length}</span>{" "}
-            SKU's in your current catalog
+            {filtered.length === 1 ? "product" : "products"} in your catalog
           </p>
         </div>
         <Link
           href="/admin/products/new"
-          className="px-6 py-3 bg-slate-900 text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-lg shadow-slate-900/5"
+          className="px-6 py-3 bg-slate-900 text-white rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-lg shadow-slate-900/5"
         >
-          + Add New Product
+          + New Product
         </Link>
       </div>
 
@@ -73,13 +69,13 @@ export default function ProductsPage() {
             placeholder="Search catalog..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-300"
+            className="w-full bg-white border border-slate-200 rounded-lg px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-300"
           />
         </div>
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="bg-white border border-slate-200 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-slate-600"
+          className="bg-white border border-slate-200 rounded-lg px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-slate-600"
         >
           <option value="">Categories (All)</option>
           {categories.map((c) => (
@@ -91,7 +87,7 @@ export default function ProductsPage() {
         <select
           value={filterStock}
           onChange={(e) => setFilterStock(e.target.value)}
-          className="bg-white border border-slate-200 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-slate-600"
+          className="bg-white border border-slate-200 rounded-lg px-5 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-all cursor-pointer text-slate-600"
         >
           <option value="">Stock Levels (All)</option>
           <option value="in">Sufficient Stock</option>
@@ -105,7 +101,7 @@ export default function ProductsPage() {
               setFilterCategory("");
               setFilterStock("");
             }}
-            className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 px-4 py-2 border border-transparent hover:border-red-100 rounded-full transition-all"
+            className="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 px-4 py-2 border border-transparent hover:border-red-100 rounded-lg transition-all"
           >
             Clear Filters
           </button>
@@ -198,7 +194,7 @@ export default function ProductsPage() {
                     </td>
                     <td className="px-8 py-4">
                       <span
-                        className={`inline-block text-[10px] font-bold tracking-tight px-3 py-1 rounded-full border ${
+                        className={`inline-block text-[10px] font-bold tracking-tight px-3 py-1 rounded-lg border ${
                           (p.stockCount ?? 0) === 0
                             ? "bg-red-50 text-red-600 border-red-100"
                             : (p.stockCount ?? 0) <= 10
@@ -214,17 +210,17 @@ export default function ProductsPage() {
                     <td className="px-8 py-4">
                       <div className="flex gap-2 flex-wrap">
                         {p.isFeatured && (
-                          <span className="text-[8px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full font-bold uppercase tracking-widest border border-slate-200">
+                          <span className="text-[8px] px-2 py-0.5 bg-slate-100 text-slate-600 rounded-lg font-bold uppercase tracking-widest border border-slate-200">
                             Featured
                           </span>
                         )}
                         {p.isBestseller && (
-                          <span className="text-[8px] px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full font-bold uppercase tracking-widest border border-amber-100">
+                          <span className="text-[8px] px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg font-bold uppercase tracking-widest border border-amber-100">
                             Bestseller
                           </span>
                         )}
                         {p.isNew && (
-                          <span className="text-[8px] px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-full font-bold uppercase tracking-widest border border-emerald-100">
+                          <span className="text-[8px] px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg font-bold uppercase tracking-widest border border-emerald-100">
                             New
                           </span>
                         )}

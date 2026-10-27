@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getSettings, initStore } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 
 const SLIDES = [
   {
@@ -35,10 +35,10 @@ export default function HeroCarousel() {
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    initStore();
-    const settings = getSettings();
-    setImages(settings.carouselImages ?? []);
-    setMounted(true);
+    fetchSettings().then((settings) => {
+      setImages(settings.carouselImages ?? []);
+      setMounted(true);
+    });
   }, []);
 
   const count = images.length > 0 ? images.length : 1;
@@ -114,7 +114,7 @@ export default function HeroCarousel() {
         key={current}
       >
         <div className="animate-in fade-in slide-in-from-bottom-10 duration-1000 max-w-2xl relative">
-          <p className="text-[10px] font-bold text-emerald-400 tracking-[0.4em] uppercase mb-6 inline-block px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/10 shadow-sm transition-all hover:bg-white/20">
+          <p className="text-[10px] font-bold text-emerald-400 tracking-[0.4em] uppercase mb-6 inline-block px-4 py-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 shadow-sm transition-all hover:bg-white/20">
             {slideText.label}
           </p>
           <h1 className="text-3xl sm:text-5xl lg:text-5xl font-display font-bold text-white leading-tight tracking-tighter mb-6 whitespace-pre-line animate-in slide-in-from-left-4 duration-1200 drop-shadow-sm">
@@ -126,13 +126,13 @@ export default function HeroCarousel() {
           <div className="flex gap-3 flex-wrap">
             <Link
               href="/products"
-              className="group px-8 py-3 bg-white text-slate-950 font-bold text-[10px] uppercase tracking-widest rounded-full transition-all hover:bg-emerald-500 hover:text-white active:scale-95 shadow-lg"
+              className="group px-8 py-3 bg-white text-slate-950 font-bold text-[10px] uppercase tracking-widest rounded-lg transition-all hover:bg-emerald-500 hover:text-white active:scale-95 shadow-lg"
             >
               Shop collection
             </Link>
             <Link
               href="/about"
-              className="px-8 py-3 border border-white/40 text-white hover:bg-white/10 font-bold text-[10px] uppercase tracking-widest rounded-full transition-all backdrop-blur-sm active:scale-95"
+              className="px-8 py-3 border border-white/40 text-white hover:bg-white/10 font-bold text-[10px] uppercase tracking-widest rounded-lg transition-all backdrop-blur-sm active:scale-95"
             >
               Our mission
             </Link>
@@ -148,7 +148,7 @@ export default function HeroCarousel() {
               key={idx}
               onClick={() => goTo(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1.5 transition-all duration-500 rounded-full ${idx === current ? "w-12 bg-emerald-500" : "w-1.5 bg-white/20 hover:bg-white/40 shadow-sm"}`}
+              className={`h-1.5 transition-all duration-500 rounded-lg ${idx === current ? "w-12 bg-emerald-500" : "w-1.5 bg-white/20 hover:bg-white/40 shadow-sm"}`}
             />
           ))}
       </div>

@@ -89,7 +89,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
             </div>
             <button
               onClick={onClose}
-              className="px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-emerald-600 hover:bg-emerald-500 text-white transition-all w-fit shadow-md shadow-emerald-900/30"
+              className="px-6 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-widest bg-emerald-600 hover:bg-emerald-500 text-white transition-all w-fit shadow-md shadow-emerald-900/30"
             >
               Close & Browse Catalog
             </button>
@@ -104,7 +104,7 @@ export default function VideoModal({ video, isOpen, onClose }: VideoModalProps) 
                 {video.highlights.map((h, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-emerald-950/60 text-emerald-300 border border-emerald-500/20"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-emerald-950/60 text-emerald-300 border border-emerald-500/20"
                   >
                     <svg
                       className="w-3 h-3 text-emerald-400"

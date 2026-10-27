@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import AdminSidebar from "@/app/components/admin/AdminSidebar";
-import { initStore, isAuthenticated } from "@/app/lib/store";
 
 export default function AdminShell({
   children,
@@ -11,28 +9,9 @@ export default function AdminShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    initStore();
-    if (pathname !== "/admin/login" && !isAuthenticated()) {
-      router.replace("/admin/login");
-      return;
-    }
-    setReady(true);
-  }, [pathname, router]);
-
-  if (!ready) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 animate-pulse italic">
-          initializing environment...
-        </div>
-      </div>
-    );
-  }
-
+  // Access is enforced server-side in middleware.ts via the signed session
+  // cookie, so this component only needs to pick the right chrome.
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }

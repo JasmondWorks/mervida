@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initStore } from "@/app/lib/store";
 import {
   initPersonalShoppingStore,
   getDiasporaRequests,
@@ -60,7 +59,6 @@ export default function AdminPersonalShoppingPage() {
     useState<ElderCareRegistration | null>(null);
 
   useEffect(() => {
-    initStore();
     initPersonalShoppingStore();
     reload();
   }, []);
@@ -101,13 +99,13 @@ export default function AdminPersonalShoppingPage() {
   return (
     <div className="p-8 sm:p-12 max-w-[1400px] mx-auto">
       {/* Header */}
-      <div className="mb-10">
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-emerald-600 mb-2">
-          Personal Shopping
-        </p>
+      <div className="mb-10 space-y-2">
         <h1 className="text-3xl font-display font-bold tracking-tighter text-slate-950">
-          Requests & Registrations
+          Personal Shopping
         </h1>
+        <p className="text-slate-400 font-medium text-xs">
+          Diaspora requests and elder care registrations
+        </p>
       </div>
 
       {/* Tabs */}
@@ -118,7 +116,7 @@ export default function AdminPersonalShoppingPage() {
             setSelectedRequest(null);
             setSelectedRegistration(null);
           }}
-          className={`px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${
+          className={`px-6 py-3 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all ${
             tab === "diaspora"
               ? "bg-slate-900 text-white"
               : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -126,7 +124,7 @@ export default function AdminPersonalShoppingPage() {
         >
           Diaspora Requests
           {diasporaRequests.length > 0 && (
-            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-full text-[9px]">
+            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-lg text-[9px]">
               {diasporaRequests.length}
             </span>
           )}
@@ -137,7 +135,7 @@ export default function AdminPersonalShoppingPage() {
             setSelectedRequest(null);
             setSelectedRegistration(null);
           }}
-          className={`px-6 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all ${
+          className={`px-6 py-3 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all ${
             tab === "elder"
               ? "bg-slate-900 text-white"
               : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -145,7 +143,7 @@ export default function AdminPersonalShoppingPage() {
         >
           Elder Care Registrations
           {elderRegistrations.length > 0 && (
-            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-full text-[9px]">
+            <span className="ml-2 bg-white/20 px-2 py-0.5 rounded-lg text-[9px]">
               {elderRegistrations.length}
             </span>
           )}
@@ -190,7 +188,7 @@ export default function AdminPersonalShoppingPage() {
                         status: e.target.value as DiasporaRequestStatus,
                       });
                     }}
-                    className="bg-white border border-slate-200 rounded-full px-4 py-2 text-xs font-bold outline-none"
+                    className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-xs font-bold outline-none"
                   >
                     {DIASPORA_STATUSES.map((s) => (
                       <option key={s} value={s}>
@@ -200,7 +198,7 @@ export default function AdminPersonalShoppingPage() {
                   </select>
                   <button
                     onClick={() => handleDeleteDiaspora(selectedRequest.id)}
-                    className="px-4 py-2 rounded-full bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
+                    className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
                   >
                     Delete
                   </button>
@@ -351,7 +349,7 @@ export default function AdminPersonalShoppingPage() {
                                     e.target.value as DiasporaRequestStatus,
                                   )
                                 }
-                                className={`px-3 py-1.5 rounded-full text-[10px] font-bold border outline-none ${statusColor(req.status)}`}
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border outline-none ${statusColor(req.status)}`}
                               >
                                 {DIASPORA_STATUSES.map((s) => (
                                   <option key={s} value={s}>
@@ -418,7 +416,7 @@ export default function AdminPersonalShoppingPage() {
                         status: e.target.value as ElderCareStatus,
                       });
                     }}
-                    className="bg-white border border-slate-200 rounded-full px-4 py-2 text-xs font-bold outline-none"
+                    className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-xs font-bold outline-none"
                   >
                     {ELDER_STATUSES.map((s) => (
                       <option key={s} value={s}>
@@ -428,7 +426,7 @@ export default function AdminPersonalShoppingPage() {
                   </select>
                   <button
                     onClick={() => handleDeleteElder(selectedRegistration.id)}
-                    className="px-4 py-2 rounded-full bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
+                    className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-all"
                   >
                     Delete
                   </button>
@@ -596,7 +594,7 @@ export default function AdminPersonalShoppingPage() {
                                     e.target.value as ElderCareStatus,
                                   )
                                 }
-                                className={`px-3 py-1.5 rounded-full text-[10px] font-bold border outline-none ${statusColor(reg.status)}`}
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border outline-none ${statusColor(reg.status)}`}
                               >
                                 {ELDER_STATUSES.map((s) => (
                                   <option key={s} value={s}>

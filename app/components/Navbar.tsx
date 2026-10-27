@@ -4,7 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartContext";
-import { getCategories } from "@/app/lib/store";
+import { fetchCategories } from "@/app/lib/api-client";
 import type { Category } from "@/app/lib/types";
 
 const PERSONAL_SHOPPING_LINKS = [
@@ -49,7 +49,7 @@ export default function Navbar() {
   }, [menuOpen]);
 
   useEffect(() => {
-    setCategories(getCategories());
+    fetchCategories().then(setCategories);
     function onScroll() {
       setScrolled(window.scrollY > 20);
     }
@@ -121,7 +121,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation - Dynamic Style */}
           <nav
-            className={`hidden md:flex items-center gap-1 p-1 rounded-full border transition-all duration-500 ${
+            className={`hidden md:flex items-center gap-1 p-1 rounded-lg border transition-all duration-500 ${
               isDarkTheme
                 ? "border-white/10 bg-white/5 backdrop-blur-md"
                 : "border-slate-100 bg-slate-50"
@@ -148,7 +148,7 @@ export default function Navbar() {
               >
                 <Link
                   href={link.href}
-                  className={`px-6 py-2 rounded-full text-[11px] font-semibold uppercase tracking-widest transition-all duration-500 flex items-center gap-2 ${
+                  className={`px-6 py-2 rounded-lg text-[11px] font-semibold uppercase tracking-widest transition-all duration-500 flex items-center gap-2 ${
                     isActive(link.href)
                       ? isDarkTheme
                         ? "bg-white text-slate-950"
@@ -405,7 +405,7 @@ export default function Navbar() {
                   </Link>
 
                   {link.label === "Shop" && categories.length > 0 && (
-                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l-2 border-emerald-50 my-2">
+                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l border-slate-200 my-2">
                       {categories.map((cat) => (
                         <Link
                           key={cat.id}
@@ -420,7 +420,7 @@ export default function Navbar() {
                   )}
 
                   {link.label === "Personal Shopping" && (
-                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l-2 border-emerald-50 my-2">
+                    <div className="grid grid-cols-1 gap-2 py-3 pl-4 border-l border-slate-200 my-2">
                       {PERSONAL_SHOPPING_LINKS.map((ps) => (
                         <Link
                           key={ps.href}

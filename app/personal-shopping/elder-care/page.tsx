@@ -1,40 +1,50 @@
 "use client";
 import { useState, useEffect } from "react";
-import { initStore, getSettings, generateId } from "@/app/lib/store";
+import { generateId } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 import {
   initPersonalShoppingStore,
   saveElderCareRegistration,
 } from "@/app/lib/personal-shopping-store";
 import type { ElderCareRegistration } from "@/app/lib/personal-shopping-types";
 
+const SERVICE_ICONS = {
+  cart: "M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 1.994-4.705 2.602-7.189.114-.47-.251-.961-.735-.961H5.106M7.5 14.25L5.106 5.272M7.5 14.25l-1.323 2.145c-.35.567.055 1.302.72 1.302h11.925a2.25 2.25 0 100-4.5H7.5z",
+  leaf: "M12 21a9 9 0 01-9-9c0-3.5 2-6.5 5-8a9 9 0 017.5 2.5c1 1.5 1.5 3.5 1.5 5.5a9 9 0 01-5 9zM9 15c1-2 3-3 6-3",
+  pill: "M9.75 9.75l4.5 4.5m-7.682-1.318a4.5 4.5 0 116.364-6.364l6.364 6.364a4.5 4.5 0 11-6.364 6.364l-6.364-6.364z",
+  bottle: "M9.75 2.25h4.5m-4.5 0v3.879a1.5 1.5 0 01-.44 1.06L7.5 8.5a3 3 0 00-.88 2.122V18.75A2.25 2.25 0 008.87 21h6.26a2.25 2.25 0 002.25-2.25v-8.128a3 3 0 00-.88-2.122l-1.81-1.31a1.5 1.5 0 01-.44-1.06V2.25m-4.5 0h4.5",
+  box: "M20.25 7.5l-8.25 4.5-8.25-4.5m16.5 0l-8.25-4.5-8.25 4.5m16.5 0v9l-8.25 4.5m-8.25-4.5v-9m8.25 13.5l-8.25-4.5",
+  chat: "M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z",
+} as const;
+
 const SERVICES = [
   {
-    icon: "🛒",
+    icon: SERVICE_ICONS.cart,
     title: "Weekly / Monthly Market Runs",
     text: "Give us a recurring list and we'll shop on schedule.",
   },
   {
-    icon: "🌿",
+    icon: SERVICE_ICONS.leaf,
     title: "Fresh Produce & Ingredients",
     text: "Tomatoes, pepper, onions, ede, bitter leaf, ugwu — all fresh.",
   },
   {
-    icon: "💊",
+    icon: SERVICE_ICONS.pill,
     title: "Pharmacy Pickups",
     text: "We can collect prescriptions or over-the-counter items.",
   },
   {
-    icon: "🧴",
+    icon: SERVICE_ICONS.bottle,
     title: "Household Staples",
     text: "Soap, washing powder, cooking oil — anything on the list.",
   },
   {
-    icon: "📦",
+    icon: SERVICE_ICONS.box,
     title: "Specialist Items",
     text: "Hard-to-find ingredients, specific brands, specialty health foods.",
   },
   {
-    icon: "💬",
+    icon: SERVICE_ICONS.chat,
     title: "Personal Communication",
     text: "We call before shopping to confirm and after delivery to check.",
   },
@@ -133,10 +143,8 @@ export default function ElderCareShoppingPage() {
   const [additionalNotes, setAdditionalNotes] = useState("");
 
   useEffect(() => {
-    initStore();
     initPersonalShoppingStore();
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
+    fetchSettings().then((s) => setWhatsappNumber(s.whatsappNumber ?? ""));
   }, []);
 
   function toggleDay(day: string) {
@@ -192,7 +200,7 @@ export default function ElderCareShoppingPage() {
       {/* Hero */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-28 px-6 text-center rounded-b-[4rem] overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000 max-w-3xl mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
             Elder Care Shopping
           </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
@@ -222,8 +230,10 @@ export default function ElderCareShoppingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-slate-50 border border-slate-100 rounded-[2.5rem] p-10 sm:p-12">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-2xl mb-8">
-              👵
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8">
+              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.964 0a9 9 0 10-11.964 0m11.964 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </div>
             <h3 className="text-xl font-display font-bold text-slate-950 mb-6 tracking-tight">
               For the Elderly Person
@@ -238,7 +248,9 @@ export default function ElderCareShoppingPage() {
                   key={item}
                   className="flex items-start gap-3 text-slate-600 text-sm font-medium leading-relaxed"
                 >
-                  <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                  <svg className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
                   {item}
                 </li>
               ))}
@@ -246,8 +258,10 @@ export default function ElderCareShoppingPage() {
           </div>
 
           <div className="bg-slate-50 border border-slate-100 rounded-[2.5rem] p-10 sm:p-12">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-2xl mb-8">
-              👨‍👩‍👧
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8">
+              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M15 15.75a4.5 4.5 0 10-5.733-6.933M8.625 15.75a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" />
+              </svg>
             </div>
             <h3 className="text-xl font-display font-bold text-slate-950 mb-6 tracking-tight">
               For the Family Member
@@ -262,7 +276,9 @@ export default function ElderCareShoppingPage() {
                   key={item}
                   className="flex items-start gap-3 text-slate-600 text-sm font-medium leading-relaxed"
                 >
-                  <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                  <svg className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
                   {item}
                 </li>
               ))}
@@ -289,7 +305,11 @@ export default function ElderCareShoppingPage() {
                 key={s.title}
                 className="bg-white border border-slate-100 rounded-[2rem] p-8 group hover:border-emerald-500/20 transition-all duration-300"
               >
-                <span className="text-3xl block mb-4">{s.icon}</span>
+                <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
+                  </svg>
+                </div>
                 <h3 className="text-lg font-display font-bold text-slate-950 mb-2 tracking-tight">
                   {s.title}
                 </h3>
@@ -573,7 +593,7 @@ export default function ElderCareShoppingPage() {
                           key={day}
                           type="button"
                           onClick={() => toggleDay(day)}
-                          className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest border transition-all ${
+                          className={`px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-widest border transition-all ${
                             selectedDays.includes(day)
                               ? "bg-emerald-600 text-white border-emerald-600"
                               : "bg-slate-50 text-slate-500 border-slate-200 hover:border-emerald-500"
@@ -632,7 +652,7 @@ export default function ElderCareShoppingPage() {
 
               <button
                 type="submit"
-                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
+                className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95"
               >
                 Register for Elder Care Shopping
               </button>

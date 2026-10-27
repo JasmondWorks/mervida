@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { initStore, getProducts } from "@/app/lib/store";
+import { fetchProducts } from "@/app/lib/api-client";
 import type { Product } from "@/app/lib/types";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import ProductCard from "@/app/components/ProductCard";
@@ -94,11 +94,10 @@ export default function HomePage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    initStore();
-    const all = getProducts();
-    setAllProducts(all);
-    const f = all.filter((p) => p.isFeatured || p.isBestseller).slice(0, 4);
-    setFeatured(f);
+    fetchProducts().then((all) => {
+      setAllProducts(all);
+      setFeatured(all.filter((p) => p.isFeatured || p.isBestseller).slice(0, 4));
+    });
   }, []);
 
   return (
@@ -110,7 +109,7 @@ export default function HomePage() {
       <section className="py-12 sm:py-20 px-6 sm:px-12 max-w-[1440px] mx-auto animate-in fade-in duration-500">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="space-y-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-600 px-3 py-1 bg-emerald-50 w-fit rounded-full border border-emerald-100">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-600 px-3 py-1 bg-emerald-50 w-fit rounded-lg border border-emerald-100">
               Mervida Selection
             </p>
             <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tighter text-slate-900 leading-none">
@@ -142,7 +141,7 @@ export default function HomePage() {
         <div className="mt-12 text-center sm:hidden">
           <Link
             href="/products"
-            className="inline-flex items-center justify-center text-[11px] font-bold tracking-[0.2em] uppercase text-white bg-slate-950 px-10 py-4 rounded-full transition-all hover:bg-emerald-600 active:scale-95 shadow-md"
+            className="inline-flex items-center justify-center text-[11px] font-bold tracking-[0.2em] uppercase text-white bg-slate-950 px-10 py-4 rounded-lg transition-all hover:bg-emerald-600 active:scale-95 shadow-md"
           >
             Browse collection
           </Link>
@@ -306,7 +305,7 @@ export default function HomePage() {
             <div className="pt-4">
               <Link
                 href="/bulk-orders"
-                className="inline-flex bg-white text-slate-950 hover:bg-emerald-500 hover:text-white px-10 py-4 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg"
+                className="inline-flex bg-white text-slate-950 hover:bg-emerald-500 hover:text-white px-10 py-4 rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg"
               >
                 Request Quote
               </Link>

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
-import { getSettings, initStore } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 
 export default function CartDrawer() {
   const {
@@ -18,13 +18,13 @@ export default function CartDrawer() {
   const [messageTemplate, setMessageTemplate] = useState("");
 
   useEffect(() => {
-    initStore();
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
-    setMessageTemplate(
-      s.whatsappMessageTemplate ||
-        "Hello GFO Foods! I would like to order:\n\n{items}\n\nEstimated Total: \u20a6{total}\n\nKindly confirm my order and provide payment details. Thank you!",
-    );
+    fetchSettings().then((s) => {
+      setWhatsappNumber(s.whatsappNumber ?? "");
+      setMessageTemplate(
+        s.whatsappMessageTemplate ||
+          "Hello GFO Foods! I would like to order:\n\n{items}\n\nEstimated Total: \u20a6{total}\n\nKindly confirm my order and provide payment details. Thank you!",
+      );
+    });
   }, []);
 
   function buildWhatsAppUrl() {
@@ -174,7 +174,7 @@ export default function CartDrawer() {
                       </p>
 
                       {/* Qty controls - rounded pill */}
-                      <div className="flex items-center bg-white p-1 rounded-full border border-slate-100">
+                      <div className="flex items-center bg-white p-1 rounded-lg border border-slate-100">
                         <button
                           onClick={() =>
                             setQuantity(
@@ -234,12 +234,12 @@ export default function CartDrawer() {
                   href={buildWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all text-center flex items-center justify-center gap-3 active:scale-[0.98] shadow-lg shadow-slate-200"
+                  className="w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all text-center flex items-center justify-center gap-3 active:scale-[0.98] shadow-lg shadow-slate-200"
                 >
                   Checkout on WhatsApp
                 </a>
               ) : (
-                <div className="p-4 bg-white border border-slate-100 rounded-full text-center">
+                <div className="p-4 bg-white border border-slate-100 rounded-lg text-center">
                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                     WhatsApp Integration Inactive
                   </p>

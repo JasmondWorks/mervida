@@ -125,7 +125,7 @@ export default function FAQPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex h-14 items-center bg-slate-950 hover:bg-emerald-600 text-white px-12 rounded-full font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/20"
+              className="inline-flex h-14 items-center bg-slate-950 hover:bg-emerald-600 text-white px-12 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-slate-950/20"
             >
               Contact Us
             </Link>

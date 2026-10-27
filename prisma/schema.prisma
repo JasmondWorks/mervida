@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL_POOLED")
+  directUrl = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  dispatched
+  delivered
+  cancelled
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String
+  image       String?
+  createdAt   DateTime  @default(now())
+  products    Product[]
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  shortDescription String
+  fullDescription  String
+  images           String[]      @default([])
+  price            Int
+  unit             String
+  categoryId       String
+  category         Category      @relation(fields: [categoryId], references: [id])
+  variants         Json?
+  nutritionSpecs   Json?
+  certifications   String[]      @default([])
+  nafdacNumber     String?
+  inStock          Boolean       @default(true)
+  stockCount       Int?
+  isFeatured       Boolean       @default(false)
+  isBestseller     Boolean       @default(false)
+  isNew            Boolean       @default(false)
+  processVideo     Json?
+  seoTitle         String
+  seoDescription   String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  phone         String
+  items         Json
+  totalAmount   Int
+  status        OrderStatus @default(pending)
+  notes         String      @default("")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String
+  body        String
+  coverImage  String?
+  status      String    @default("draft")
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Settings {
+  id                      String @id @default("default")
+  whatsappNumber          String @default("")
+  whatsappMessageTemplate String @default("")
+  businessName            String @default("")
+  businessEmail           String @default("")
+  carouselImages          String[] @default([])
+}

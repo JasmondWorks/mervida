@@ -2,7 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { initStore, getProducts, getCategories } from "@/app/lib/store";
+import { fetchProducts, fetchCategories } from "@/app/lib/api-client";
 import type { Product, Category } from "@/app/lib/types";
 import ProductCard from "@/app/components/ProductCard";
 
@@ -15,9 +15,8 @@ function ProductsContent() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    initStore();
-    setProducts(getProducts());
-    setCategories(getCategories());
+    fetchProducts().then(setProducts);
+    fetchCategories().then(setCategories);
   }, []);
 
   const categoryQuery = searchParams.get("category") || "all";
@@ -82,10 +81,10 @@ function ProductsContent() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 ml-4">
             Categories
           </p>
-          <div className="flex gap-2 flex-wrap p-1.5 bg-slate-50 rounded-full border border-slate-100">
+          <div className="flex gap-2 flex-wrap p-1.5 bg-slate-50 rounded-lg border border-slate-100">
             <button
               onClick={() => handleSelectCategory("all")}
-              className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
+              className={`px-6 py-2.5 rounded-lg text-[11px] font-semibold tracking-tight transition-all duration-300 ${
                 activeCategoryId === "all"
                   ? "bg-slate-900 text-white shadow-sm"
                   : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"
@@ -97,7 +96,7 @@ function ProductsContent() {
               <button
                 key={cat.id}
                 onClick={() => handleSelectCategory(cat.id)}
-                className={`px-6 py-2.5 rounded-full text-[11px] font-semibold tracking-tight transition-all duration-300 ${
+                className={`px-6 py-2.5 rounded-lg text-[11px] font-semibold tracking-tight transition-all duration-300 ${
                   activeCategoryId === cat.id
                     ? "bg-slate-900 text-white shadow-sm"
                     : "bg-transparent text-slate-500 hover:text-slate-900 hover:bg-white"

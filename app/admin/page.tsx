@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getProducts, getCategories, getOrders } from "@/app/lib/store";
-import type { Product, Order } from "@/app/lib/types";
+import { fetchProducts, fetchCategories, fetchOrders } from "@/app/lib/api-client";
+import type { Product, Order, Category } from "@/app/lib/types";
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-amber-50 text-amber-600 border-amber-100",
@@ -29,19 +29,11 @@ function StatCard({
   const inner = (
     <div className="flex items-center justify-between gap-4">
       <div className="space-y-0.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <p className="text-caption text-slate-400" style={{ fontSize: "10px" }}>
           {label}
         </p>
-        <div
-          className={`text-2xl font-display font-bold tracking-tight ${color}`}
-        >
-          {value}
-        </div>
-        {sub && (
-          <p className="text-[10px] font-medium text-slate-400 tracking-tight">
-            {sub}
-          </p>
-        )}
+        <div className={`text-2xl font-extrabold tracking-tight ${color}`}>{value}</div>
+        {sub && <p className="text-xs font-normal text-slate-400 tracking-tight">{sub}</p>}
       </div>
       <div
         className={`w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 ${color} opacity-40`}
@@ -81,13 +73,16 @@ function StatCard({
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [catCount, setCatCount] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    setProducts(getProducts());
-    setOrders(getOrders());
-    setCatCount(getCategories().length);
+    fetchProducts().then(setProducts);
+    fetchOrders().then(setOrders);
+    fetchCategories().then(setCategories);
   }, []);
+
+  const catCount = categories.length;
+  const categoryName = (id: string) => categories.find((c) => c.id === id)?.name;
 
   const outOfStock = products.filter((p) => !p.inStock).length;
   const lowStock = products.filter(
@@ -99,32 +94,30 @@ export default function AdminDashboard() {
     <div className="p-8 max-w-7xl mx-auto animate-in fade-in duration-700">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-emerald-600/80">
-            Internal Console
-          </p>
-          <h1 className="text-2xl font-display font-bold tracking-tight text-slate-950 leading-none">
-            Dashboard Overview
+          <h1 className="text-slate-950 tracking-tight leading-none" style={{ fontSize: "1.5rem" }}>
+            Dashboard
           </h1>
-          <p className="text-slate-400 font-medium text-[11px]">
-            GFO Foods Limited &mdash; Performance Snapshot
+          <p className="text-slate-400 font-normal text-[11px]">
+            GFO Foods Limited &mdash; today&rsquo;s snapshot
           </p>
         </div>
         <div className="flex gap-4">
           <Link
             href="/admin/products/new"
-            className="px-5 py-2 bg-slate-900 text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 shadow-sm"
+            className="text-caption px-5 py-2 bg-slate-900 text-white rounded-lg hover:bg-emerald-600 transition-all active:scale-95 shadow-sm"
+            style={{ fontSize: "10px" }}
           >
             Add Product
           </Link>
         </div>
       </div>
 
-      {/* Stats - Refined Scale */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard
           label="Catalog"
           value={products.length}
-          sub="Live SKU's"
+          sub="Live products"
           href="/admin/products"
           color="text-slate-900"
         />
@@ -153,19 +146,20 @@ export default function AdminDashboard() {
         {/* Products quick view */}
         <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-xs">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-[12px] font-bold text-slate-950 uppercase tracking-widest">
+            <h4 className="text-slate-950" style={{ fontSize: "12px" }}>
               Inventory Snapshot
-            </h2>
+            </h4>
             <Link
               href="/admin/products"
-              className="text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-600 transition-colors"
+              className="text-caption text-slate-400 hover:text-emerald-600 transition-colors"
+              style={{ fontSize: "9px" }}
             >
               Expand view &rarr;
             </Link>
           </div>
           <div className="p-2 space-y-0.5">
             {products.length === 0 ? (
-              <div className="py-12 text-center text-[10px] font-bold text-slate-300 tracking-widest uppercase">
+              <div className="py-12 text-center text-caption text-slate-300" style={{ fontSize: "10px" }}>
                 Catalog Empty
               </div>
             ) : (
@@ -187,26 +181,26 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-bold text-slate-950 truncate tracking-tight">
+                    <p className="text-sm font-semibold text-slate-950 truncate tracking-tight">
                       {p.name}
                     </p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                      {p.unit} &bull;{" "}
-                      {getCategories().find((c) => c.id === p.categoryId)?.name}
+                    <p className="text-caption text-slate-400 mt-1" style={{ fontSize: "9px" }}>
+                      {p.unit} &bull; {categoryName(p.categoryId)}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-[13px] font-bold text-slate-950 tabular-nums leading-none">
+                    <p className="text-sm font-semibold text-slate-950 tabular-nums leading-none">
                       &#8358;{p.price.toLocaleString()}
                     </p>
                     <p
-                      className={`text-[9px] font-bold uppercase tracking-widest mt-2 ${
+                      className={`text-caption mt-2 ${
                         !p.inStock
                           ? "text-red-500"
                           : (p.stockCount ?? 0) <= 10
                             ? "text-amber-500"
                             : "text-emerald-600"
                       }`}
+                      style={{ fontSize: "9px" }}
                     >
                       {!p.inStock ? "Depleted" : `${p.stockCount ?? 0} units`}
                     </p>
@@ -220,12 +214,13 @@ export default function AdminDashboard() {
         {/* Recent orders */}
         <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-xs">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-50 bg-slate-50/30">
-            <h2 className="text-[12px] font-bold text-slate-950 uppercase tracking-widest">
+            <h4 className="text-slate-950" style={{ fontSize: "12px" }}>
               Recent Transactions
-            </h2>
+            </h4>
             <Link
               href="/admin/orders"
-              className="text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-600 transition-colors"
+              className="text-caption text-slate-400 hover:text-emerald-600 transition-colors"
+              style={{ fontSize: "9px" }}
             >
               Order Desk &rarr;
             </Link>
@@ -233,7 +228,7 @@ export default function AdminDashboard() {
           <div className="p-2 space-y-0.5">
             {orders.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-[10px] font-bold text-slate-300 tracking-widest uppercase">
+                <p className="text-caption text-slate-300" style={{ fontSize: "10px" }}>
                   No orders logged
                 </p>
               </div>
@@ -244,14 +239,14 @@ export default function AdminDashboard() {
                   className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-50 transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 font-bold text-[10px] italic">
+                    <div className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 text-slate-300 font-semibold text-[10px] italic">
                       #
                     </div>
                     <div>
-                      <p className="text-[13px] font-semibold text-slate-900 tracking-tight">
+                      <p className="text-sm font-semibold text-slate-900 tracking-tight">
                         {o.customerName}
                       </p>
-                      <p className="text-[10px] font-medium text-slate-400 tracking-tight">
+                      <p className="text-xs font-normal text-slate-400 tracking-tight">
                         {new Date(o.createdAt).toLocaleDateString("en-NG", {
                           day: "numeric",
                           month: "short",
@@ -260,11 +255,12 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-slate-950 tabular-nums">
+                    <p className="text-sm font-semibold text-slate-950 tabular-nums">
                       &#8358;{o.totalAmount.toLocaleString()}
                     </p>
                     <span
-                      className={`inline-block text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 mt-1 rounded-full border ${STATUS_COLORS[o.status]}`}
+                      className={`text-caption inline-block px-2 py-0.5 mt-1 rounded-lg border ${STATUS_COLORS[o.status]}`}
+                      style={{ fontSize: "8px" }}
                     >
                       {o.status}
                     </span>
@@ -276,26 +272,24 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Summary bar - Refined Pill style */}
-      <div className="mt-10 bg-slate-900 rounded-2xl py-4 px-8 flex flex-wrap items-center justify-between gap-6 animate-in slide-in-from-bottom-6 duration-1000">
+      {/* Summary bar */}
+      <div className="mt-10 bg-slate-50 border border-slate-100 rounded-2xl py-4 px-8 flex flex-wrap items-center justify-between gap-6 animate-in slide-in-from-bottom-6 duration-1000">
         <div className="flex gap-6 items-center">
-          <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">
+          <p className="text-caption text-slate-400" style={{ fontSize: "9px" }}>
             System Pulse
           </p>
-          <span className="text-white/70 text-[11px] font-medium tracking-tight">
-            <span className="text-emerald-400 font-bold">
-              {products.length}
-            </span>{" "}
+          <span className="text-slate-600 text-[11px] font-normal tracking-tight">
+            <span className="text-emerald-600 font-semibold">{products.length}</span>{" "}
             Products &bull;{" "}
-            <span className="text-amber-400 font-bold">{catCount}</span>{" "}
-            Categories
+            <span className="text-amber-600 font-semibold">{catCount}</span> Categories
           </span>
         </div>
         <div className="flex gap-4 items-center">
           {outOfStock > 0 && (
             <Link
               href="/admin/products?stock=out"
-              className="text-red-400 text-[9px] font-bold uppercase tracking-widest border-b border-red-900/50 pb-0.5 hover:border-red-400 transition-all"
+              className="text-caption text-red-500 border-b border-red-200 pb-0.5 hover:border-red-500 transition-all"
+              style={{ fontSize: "9px" }}
             >
               {outOfStock} Depleted
             </Link>
@@ -303,7 +297,8 @@ export default function AdminDashboard() {
           {lowStock > 0 && (
             <Link
               href="/admin/products?stock=low"
-              className="text-amber-400 text-[9px] font-bold uppercase tracking-widest border-b border-amber-900/50 pb-0.5 hover:border-amber-400 transition-all"
+              className="text-caption text-amber-600 border-b border-amber-200 pb-0.5 hover:border-amber-500 transition-all"
+              style={{ fontSize: "9px" }}
             >
               {lowStock} Low Stock Alert
             </Link>

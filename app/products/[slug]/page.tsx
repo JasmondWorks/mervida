@@ -3,12 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  initStore,
-  getProducts,
-  getSettings,
-  getCategories,
-} from "@/app/lib/store";
+import { fetchProducts, fetchCategories, fetchSettings } from "@/app/lib/api-client";
 import type { Product, Category } from "@/app/lib/types";
 import { useCart } from "@/app/components/CartContext";
 import ProductCard from "@/app/components/ProductCard";
@@ -29,22 +24,20 @@ export default function ProductDetailPage() {
   const { addItem } = useCart();
 
   useEffect(() => {
-    initStore();
-    const all = getProducts();
-    const cats = getCategories();
-    const found = all.find((p) => p.slug === slug);
-    if (!found) {
-      setNotFound(true);
-      return;
-    }
-    setProduct(found);
-    setCategories(cats);
-    setMainImage(found.images[0] ?? "");
-    const others = all.filter((p) => p.id !== found.id);
-    const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 3);
-    setRelated(shuffled);
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
+    Promise.all([fetchProducts(), fetchCategories()]).then(([all, cats]) => {
+      const found = all.find((p) => p.slug === slug);
+      if (!found) {
+        setNotFound(true);
+        return;
+      }
+      setProduct(found);
+      setCategories(cats);
+      setMainImage(found.images[0] ?? "");
+      const others = all.filter((p) => p.id !== found.id);
+      const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 3);
+      setRelated(shuffled);
+    });
+    fetchSettings().then((s) => setWhatsappNumber(s.whatsappNumber ?? ""));
   }, [slug]);
 
   function getCategoryName(categoryId: string) {
@@ -176,11 +169,11 @@ export default function ProductDetailPage() {
 
           <div className="flex items-center gap-6">
             {isOutOfStock ? (
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] bg-red-50 text-red-600 border border-red-100 px-6 py-2 rounded-full">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] bg-red-50 text-red-600 border border-red-100 px-6 py-2 rounded-lg">
                 Sold out temporarily
               </span>
             ) : (
-              <div className="flex items-center gap-3 bg-emerald-50 text-emerald-700 px-5 py-2.5 rounded-full border border-emerald-100">
+              <div className="flex items-center gap-3 bg-emerald-50 text-emerald-700 px-5 py-2.5 rounded-lg border border-emerald-100">
                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                 <span className="text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">
                   {product.stockCount ?? 0} Units left in stock
@@ -194,7 +187,7 @@ export default function ProductDetailPage() {
           {/* Actions - Pill Style Consistent */}
           <div className="flex flex-col gap-4 w-full max-w-sm">
             {!isOutOfStock && (
-              <div className="flex items-center bg-slate-50 p-1.5 rounded-full border border-slate-100 w-fit">
+              <div className="flex items-center bg-slate-50 p-1.5 rounded-lg border border-slate-100 w-fit">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-12 h-12 rounded-full bg-white hover:bg-slate-100 text-slate-900 font-bold transition-all text-sm flex items-center justify-center"
@@ -216,7 +209,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`h-16 w-full rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${
+              className={`h-16 w-full rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${
                 isOutOfStock
                   ? "bg-slate-50 text-slate-300 border border-slate-100"
                   : "bg-slate-950 text-white hover:bg-emerald-600 shadow-2xl shadow-emerald-500/10"
@@ -230,7 +223,7 @@ export default function ProductDetailPage() {
                 href={buildSingleProductWhatsApp()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="h-16 w-full border border-slate-200 text-slate-500 hover:text-slate-950 hover:bg-slate-50 transition-all rounded-full font-bold text-[11px] uppercase tracking-[0.2em] flex items-center justify-center"
+                className="h-16 w-full border border-slate-200 text-slate-500 hover:text-slate-950 hover:bg-slate-50 transition-all rounded-lg font-bold text-[11px] uppercase tracking-[0.2em] flex items-center justify-center"
               >
                 Checkout on WhatsApp
               </a>
@@ -340,11 +333,11 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Manufacturing Process Video Spotlight */}
-      {product.processVideo && (
+      {product.processVideo?.videoUrl && (
         <div className="py-16 my-12 bg-slate-950 rounded-5xl p-8 sm:p-14 text-white border border-slate-900 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
             <div className="space-y-4 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em] border border-emerald-500/20">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.3em] border border-emerald-500/20">
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4 6.75C4 5.231 5.231 4 6.75 4h10.5C18.769 4 20 5.231 20 6.75v10.5c0 1.519-1.231 2.75-2.75 2.75H6.75C5.231 20 4 18.769 4 17.25V6.75zm6 3.75v3rem4-1.5-4-1.5z" />
                 </svg>
@@ -361,9 +354,12 @@ export default function ProductDetailPage() {
                   {product.processVideo.highlights.map((h, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 rounded-full bg-white/5 text-[11px] font-medium text-emerald-300 border border-white/5"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 text-[11px] font-medium text-emerald-300 border border-white/5"
                     >
-                      ✓ {h}
+                      <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {h}
                     </span>
                   ))}
                 </div>
@@ -390,7 +386,7 @@ export default function ProductDetailPage() {
                 </div>
               </div>
               {product.processVideo.duration && (
-                <span className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/80 text-[10px] font-mono text-slate-300 border border-white/10">
+                <span className="absolute bottom-3 right-3 px-3 py-1 rounded-lg bg-black/80 text-[10px] font-mono text-slate-300 border border-white/10">
                   {product.processVideo.duration}
                 </span>
               )}

@@ -78,7 +78,7 @@ export default function AboutPage() {
                   that handles the curation, but Mervida is the soul of our
                   product line.
                 </p>
-                <div className="text-white border-l-2 border-emerald-500 pl-8 py-1 italic font-display text-xl leading-relaxed tracking-tight">
+                <div className="text-white border-l border-emerald-500 pl-8 py-1 italic font-display text-xl leading-relaxed tracking-tight">
                   "The Mervida name stands for something we deeply believe in:
                   natural goodness delivered with premium quality."
                 </div>
@@ -102,7 +102,7 @@ export default function AboutPage() {
 
       {/* Founder Spotlight */}
       <section className="py-32 max-w-5xl mx-auto text-center border-t border-slate-50">
-        <div className="inline-flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-full border border-slate-100 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-12">
+        <div className="inline-flex items-center gap-4 bg-slate-50 px-6 py-2 rounded-lg border border-slate-100 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-400 mb-12">
           <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
           Founding Vision
         </div>
@@ -162,7 +162,7 @@ export default function AboutPage() {
           <div className="pt-6">
             <Link
               href="/products"
-              className="inline-flex h-16 items-center bg-white text-emerald-900 hover:bg-slate-950 hover:text-white px-16 rounded-full font-bold text-[12px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-2xl shadow-emerald-950/20"
+              className="inline-flex h-16 items-center bg-white text-emerald-900 hover:bg-slate-950 hover:text-white px-16 rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] transition-all active:scale-95 shadow-2xl shadow-emerald-950/20"
             >
               Explore Collection
             </Link>

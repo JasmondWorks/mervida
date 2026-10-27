@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initStore, getSettings } from "@/app/lib/store";
+import { fetchSettings } from "@/app/lib/api-client";
 
 const BENEFITS = [
   {
@@ -33,9 +33,7 @@ export default function BulkOrdersPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    initStore();
-    const s = getSettings();
-    setWhatsappNumber(s.whatsappNumber ?? "");
+    fetchSettings().then((s) => setWhatsappNumber(s.whatsappNumber ?? ""));
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -58,14 +56,14 @@ export default function BulkOrdersPage() {
   }
 
   const inputCls =
-    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-full px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300";
+    "w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-lg px-6 py-3.5 text-sm outline-none transition-all placeholder:text-slate-300";
 
   return (
     <main className="bg-white min-h-screen">
       {/* Hero - Engaging Mesh & Pattern */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-24 px-6 text-center rounded-b-6xl overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
             Strategic Partnerships
           </p>
           <h1 className="text-5xl sm:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
@@ -233,7 +231,7 @@ export default function BulkOrdersPage() {
             <button
               type="submit"
               disabled={!whatsappNumber}
-              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-full font-semibold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-black/5 ${
+              className={`w-full bg-slate-950 hover:bg-emerald-600 text-white py-4 rounded-lg font-semibold text-[11px] uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-black/5 ${
                 !whatsappNumber ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -266,7 +264,7 @@ export default function BulkOrdersPage() {
                 our distribution platform for product catalogues, pricing, and
                 delivery across Nigeria.
               </p>
-              <span className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest border border-white/10 group-hover:bg-white group-hover:text-emerald-900 transition-all">
+              <span className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest border border-white/10 group-hover:bg-white group-hover:text-emerald-900 transition-all">
                 Visit Mervida Distribute
                 <svg
                   className="w-3.5 h-3.5"

@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* High-quality Modern Font Stack */
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display:
-    var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
+  /* Single typeface — Plus Jakarta Sans for everything, display and body alike */
+  --font-sans: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
 
   /* Cohesive Color Shades (Slate-based with sparingly used Emerald) */
   --color-slate-50: #f8fafc;
@@ -22,6 +21,15 @@
   --color-emerald-500: #10b981;
   --color-emerald-600: #059669;
   --color-emerald-700: #047857;
+
+  /*
+   * Radius scale — see .agents/style-guide.md for when to use each.
+   * Tailwind's default scale stops at --radius-4xl (2rem); 5xl/6xl below
+   * extend it so rounded-5xl / rounded-6xl are real, working utilities
+   * instead of silently producing square corners.
+   */
+  --radius-5xl: 2.5rem;
+  --radius-6xl: 3rem;
 }
 
 :root {
@@ -44,30 +52,42 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Refined Typography Scales */
-
-/* Modern Typography Scales - Scaled down for "Smaller Elements" request */
+/*
+ * Typography scale — the only weights this project uses are 400 (regular),
+ * 600 (semibold), and 800 (extrabold). Never font-medium, font-bold, or
+ * font-black. See .agents/style-guide.md for the full rationale and the
+ * Tailwind class each level maps to.
+ */
 h1 {
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.1;
-  font-size: clamp(2rem, 5vw, 3.5rem); /* Refined size */
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
 }
 
 h2 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.2;
-  font-size: clamp(1.5rem, 4vw, 2.25rem); /* Refined size */
+  line-height: 1.15;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
 }
 
 h3 {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.3;
+  font-size: 1.125rem;
 }
 
 /* Interaction: Use background shades & scale, not shadows */
@@ -78,11 +98,16 @@ a {
 
 /* Refined, smaller button scale */
 .btn-primary {
-  @apply bg-slate-950 text-white font-bold rounded-full py-3 px-8 transition-all hover:bg-slate-800 active:scale-95 text-[11px] uppercase tracking-[0.2em];
+  @apply bg-slate-950 text-white font-semibold rounded-full py-3 px-8 transition-all hover:bg-slate-800 active:scale-95 text-[11px] uppercase tracking-[0.2em];
 }
 
 .btn-secondary {
-  @apply bg-slate-100 text-slate-900 font-bold rounded-full py-3 px-8 transition-all hover:bg-slate-200 active:scale-95 text-[11px] uppercase tracking-[0.2em];
+  @apply bg-slate-100 text-slate-900 font-semibold rounded-full py-3 px-8 transition-all hover:bg-slate-200 active:scale-95 text-[11px] uppercase tracking-[0.2em];
+}
+
+/* Caption — small uppercase labels, meta text, eyebrow-style tags */
+.text-caption {
+  @apply text-[11px] font-semibold uppercase tracking-[0.2em];
 }
 
 /* Custom UI Tokens */
@@ -135,4 +160,114 @@ a {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Blog editorial typography — warm, readable, consistent with brand type */
+.blog-prose {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: var(--color-slate-700);
+}
+.blog-prose > :first-child {
+  margin-top: 0;
+}
+.blog-prose p {
+  margin: 1.5em 0;
+}
+.blog-prose h1,
+.blog-prose h2,
+.blog-prose h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-slate-950);
+  margin-top: 2.2em;
+  margin-bottom: 0.7em;
+}
+.blog-prose h1 {
+  font-size: 2rem;
+}
+.blog-prose h2 {
+  font-size: 1.5rem;
+  position: relative;
+  padding-bottom: 0.5em;
+}
+.blog-prose h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 2.5rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-emerald-500);
+}
+.blog-prose h3 {
+  font-size: 1.2rem;
+  color: var(--color-emerald-700);
+}
+.blog-prose > p:first-of-type {
+  font-size: 1.15em;
+  color: var(--color-slate-900);
+  font-weight: 600;
+}
+.blog-prose a {
+  color: var(--color-emerald-700);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-emerald-500) 40%, transparent);
+  text-underline-offset: 2px;
+}
+.blog-prose strong {
+  color: var(--color-slate-950);
+  font-weight: 600;
+}
+.blog-prose blockquote {
+  margin: 2em 0;
+  padding: 0.25em 0 0.25em 1.5em;
+  border-left: 3px solid var(--color-emerald-500);
+  font-style: italic;
+  color: var(--color-slate-600);
+}
+.blog-prose ul,
+.blog-prose ol {
+  margin: 1.5em 0;
+  padding-left: 1.4em;
+}
+.blog-prose li {
+  margin: 0.5em 0;
+}
+.blog-prose ul li {
+  list-style-type: disc;
+}
+.blog-prose ol li {
+  list-style-type: decimal;
+}
+.blog-prose li::marker {
+  color: var(--color-emerald-500);
+}
+.blog-prose img {
+  width: 100%;
+  border-radius: 1.5rem;
+  margin: 2em 0;
+}
+.blog-prose code {
+  background: var(--color-slate-100);
+  color: var(--color-slate-800);
+  padding: 0.15em 0.4em;
+  border-radius: 0.3em;
+  font-size: 0.9em;
+}
+.blog-prose hr {
+  border: none;
+  border-top: 1px solid var(--color-slate-200);
+  margin: 3em 0;
+}
+
+/* TipTap editor placeholder */
+.blog-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-slate-300);
+  pointer-events: none;
+  height: 0;
 }

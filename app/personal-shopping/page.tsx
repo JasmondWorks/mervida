@@ -59,7 +59,7 @@ export default function PersonalShoppingPage() {
       {/* Hero */}
       <section className="relative bg-mesh-emerald bg-pattern-dark pt-32 pb-28 px-6 text-center rounded-b-[4rem] overflow-hidden">
         <div className="relative z-10 animate-in fade-in slide-in-from-top-8 duration-1000 max-w-3xl mx-auto">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 w-fit mx-auto">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-emerald-400 mb-6 px-5 py-2 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 w-fit mx-auto">
             Personal Shopping
           </p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-bold text-white tracking-tighter mb-6 leading-none">
@@ -72,13 +72,13 @@ export default function PersonalShoppingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/personal-shopping/diaspora"
-              className="bg-white text-slate-950 px-8 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-400 hover:text-slate-950 transition-all active:scale-95"
+              className="bg-white text-slate-950 px-8 py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-400 hover:text-slate-950 transition-all active:scale-95"
             >
               Shop for the Diaspora
             </Link>
             <Link
               href="/personal-shopping/elder-care"
-              className="bg-white/10 text-white px-8 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest border border-white/20 hover:bg-white/20 transition-all active:scale-95 backdrop-blur-md"
+              className="bg-white/10 text-white px-8 py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest border border-white/20 hover:bg-white/20 transition-all active:scale-95 backdrop-blur-md"
             >
               Elder Care Shopping
             </Link>
@@ -116,7 +116,7 @@ export default function PersonalShoppingPage() {
             </p>
             <Link
               href="/personal-shopping/diaspora"
-              className="inline-flex items-center gap-2 bg-slate-950 text-white px-8 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 w-fit group-hover:bg-emerald-600"
+              className="inline-flex items-center gap-2 bg-slate-950 text-white px-8 py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 w-fit group-hover:bg-emerald-600"
             >
               Start Your Diaspora Order
               <svg
@@ -150,7 +150,7 @@ export default function PersonalShoppingPage() {
             </p>
             <Link
               href="/personal-shopping/elder-care"
-              className="inline-flex items-center gap-2 bg-slate-950 text-white px-8 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 w-fit group-hover:bg-emerald-600"
+              className="inline-flex items-center gap-2 bg-slate-950 text-white px-8 py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-all active:scale-95 w-fit group-hover:bg-emerald-600"
             >
               Request Elder Care Shopping
               <svg
@@ -280,7 +280,7 @@ export default function PersonalShoppingPage() {
           <div className="text-center mt-12">
             <Link
               href="/products?tag=diaspora"
-              className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-4 rounded-full font-bold text-[11px] uppercase tracking-widest border border-white/10 hover:bg-white/20 transition-all"
+              className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-4 rounded-lg font-bold text-[11px] uppercase tracking-widest border border-white/10 hover:bg-white/20 transition-all"
             >
               See all diaspora-favourite products
               <svg

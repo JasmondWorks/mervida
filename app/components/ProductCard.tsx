@@ -53,12 +53,12 @@ export default function ProductCard({ product }: Props) {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {product.isNew && (
-            <span className="bg-emerald-600 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
+            <span className="bg-emerald-600 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-lg">
               New
             </span>
           )}
           {product.isBestseller && (
-            <span className="bg-amber-500 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full">
+            <span className="bg-amber-500 text-white text-[8px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-lg">
               Bestseller
             </span>
           )}
@@ -92,14 +92,14 @@ export default function ProductCard({ product }: Props) {
           </span>
 
           {isOutOfStock ? (
-            <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-full">
+            <span className="text-[9px] text-slate-400 font-medium uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-lg">
               Sold out
             </span>
           ) : (
             <button
               onClick={handleAddToCart}
               aria-label={`Add ${product.name} to cart`}
-              className="bg-slate-900 text-white p-2.5 rounded-full transition-all hover:bg-emerald-600 active:scale-90 shrink-0"
+              className="bg-slate-900 text-white p-2.5 rounded-lg transition-all hover:bg-emerald-600 active:scale-90 shrink-0"
             >
               <svg
                 className="w-4 h-4"
