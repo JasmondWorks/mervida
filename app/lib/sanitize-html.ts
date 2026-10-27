@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 const ALLOWED_TAGS = [
   "h1",
@@ -38,20 +38,25 @@ const ALLOWED_TAGS = [
   "td",
 ];
 
+const ALLOWED_ATTRIBUTES = [
+  "href",
+  "target",
+  "rel",
+  "src",
+  "alt",
+  "title",
+  "class",
+  "style",
+  "width",
+  "height",
+];
+
 export function sanitizeBlogHtml(html: string): string {
-  return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR: [
-      "href",
-      "target",
-      "rel",
-      "src",
-      "alt",
-      "title",
-      "class",
-      "style",
-      "width",
-      "height",
-    ],
+  return sanitizeHtml(html, {
+    allowedTags: ALLOWED_TAGS,
+    allowedAttributes: {
+      "*": ALLOWED_ATTRIBUTES,
+    },
+    allowedSchemes: ["http", "https", "mailto", "tel"],
   });
 }
